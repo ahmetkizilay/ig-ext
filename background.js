@@ -93,6 +93,6 @@ var app = (function (config) {
     };
 })(config);
 
-chrome.browserAction.onClicked.addListener(function (tab) {
-    app.authenticate();
-});
+//chrome.browserAction.onClicked.addListener(function (tab) {
+//  app.authenticate();
+//});
