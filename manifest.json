@@ -12,7 +12,7 @@
     },
 
     "browser_action": {
-        "default_popup": ""
+        "default_popup": "pages/feed.html"
     },
 
     "permissions": [
