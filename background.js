@@ -21,8 +21,9 @@ var app = (function (config) {
         return null;
     };
 
-    var _fn_authenticate = function () {
+    var _fn_authenticate = function (callback) {
         console.log('authenticate starts here');
+
         chrome.identity.launchWebAuthFlow({
             'url': _oauth_link,
             'interactive': true
@@ -40,11 +41,11 @@ var app = (function (config) {
                 return;
             }
 
-            _fn_handle_oauth_second_step(code);
+            _fn_handle_oauth_second_step(code, callback);
         });
     };
 
-    var _fn_handle_oauth_second_step = function (code) {
+    var _fn_handle_oauth_second_step = function (code, callback) {
         var url = config.access_token_link + '?code=' + code;
         var onsuccess = function (access_data) {
             var accessJSON = JSON.parse(access_data);
@@ -56,12 +57,22 @@ var app = (function (config) {
 
             chrome.storage.local.set({'user_data': _user_data}, function () {
                 console.log('stored user data in storage');
+
+                if(callback) {
+                    callback({'result': 'OK'});
+                }
+
             });
 
         };
         var onfail = function (status, msg) {
             console.log('error: status ' + status);
             console.log('error: msg' + msg);
+
+            if(callback) {
+                callback({'result': 'ERR', 'status': status, 'msg': msg});
+            }
+
         };
 
         _fn_sendHttpRequest('GET', url, null, onsuccess, onfail);
@@ -92,6 +103,14 @@ var app = (function (config) {
         authenticate: _fn_authenticate
     };
 })(config);
+
+chrome.extension.onRequest.addListener(function (request, tab, sendRequest) {
+    if(request.method === 'auth') {
+        app.authenticate(function (result) {
+            sendRequest(result);
+        });
+    }
+});
 
 //chrome.browserAction.onClicked.addListener(function (tab) {
 //  app.authenticate();
