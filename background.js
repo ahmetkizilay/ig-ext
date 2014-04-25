@@ -3,6 +3,60 @@ var config = {
     'access_token_link': 'http://localhost:2424/step_two'
 };
 
+var api = (function () {
+    var _base_url = 'https://api.instagram.com/v1';
+    var _methods = {};
+
+    var _fn_buildParamString = function (parameters) {
+        var keys = Object.keys(parameters);
+        var output = '';
+
+        keys.forEach(function (key) {
+            output += key + '=' + encodeURIComponent(parameters[key]) + '&';
+        });
+
+        return output.slice(0, -1);
+    };
+
+    var _fn_sendHttpRequest = function(method, url, params, onsuccess, onfail) {
+        var xhr = new XMLHttpRequest();
+        xhr.open(method, url, true);
+
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+        xhr.onreadystatechange = function () {
+
+            if(xhr.readyState === 4) {
+                if(xhr.status === 200) {
+                    onsuccess(xhr.responseText);
+                } else {
+                    onfail(xhr.status, xhr.responseText);
+                }
+            }
+
+        };
+
+        xhr.send(params);
+    };
+
+
+    _methods._users_self_feed = function () {
+        var parameters = arguments[0];
+        var onsuccess = arguments[1];
+        var onfail = arguments[2];
+
+        var method = 'GET';
+        var endpoint = '/users/self/feed/';
+        var paramString = _fn_buildParamString(parameters);
+
+        var url = _base_url + endpoint + '?' + paramString;
+
+        _fn_sendHttpRequest(method, url, null, onsuccess, onfail);
+    };
+
+    return _methods;
+})();
+
 var app = (function (config) {
     var _app_id = chrome.runtime.id;
     var _redirect_uri = 'https://' + _app_id + '.chromiumapp.org/oauth-redirect.html';
@@ -99,21 +153,21 @@ var app = (function (config) {
         xhr.send(params);
     };
 
-    var _fn_api = function (path, callback) {
-        var method = 'GET';
-        var url = 'https://api.instagram.com/v1' + path;
-        params = 'access_token=' + encodeURIComponent(_user_data.access_token);
-        url += '?' + params;
+    var _fn_getOwnFeed = function(callback) {
+        var parameters = {
+            'access_token': _user_data.access_token
+        };
 
         var onsuccess = function(response) {
-            var responseJSON = JSON.parse(response);
-            callback(responseJSON);
+            callback({'success': true, 'response': JSON.parse(response)});
         };
-        var onfail = function (status, response) {
-            console.log(status, response);
+
+        var onfail = function(status, msg) {
+            console.log('getOwnFeed returned error: ', status, msg);
+            callback({'success': false});
         };
-        
-        _fn_sendHttpRequest(method, url, null, onsuccess, onfail);
+
+        api['_users_self_feed'].call(api, parameters, onsuccess, onfail);
     };
 
     var _fn_setup = function () {
@@ -126,7 +180,7 @@ var app = (function (config) {
 
     return {
         authenticate: _fn_authenticate,
-        api: _fn_api,
+        getOwnFeed: _fn_getOwnFeed,
         setup: _fn_setup
     };
 })(config);
@@ -138,11 +192,8 @@ chrome.extension.onRequest.addListener(function (request, tab, sendRequest) {
         });
     }
 
-    if(request.method === 'api') {
-        var path = request.path;
-        app.api(path, function (result) {
-            sendRequest(result);
-        });
+    if(request.method === 'ownfeed') {
+        app.getOwnFeed(sendRequest);
     }
 });
 

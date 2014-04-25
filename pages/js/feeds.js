@@ -15,9 +15,15 @@ document.addEventListener('DOMContentLoaded', function() {
         imgProfile.src = user_data.profile_picture;
 
         // loading user feed
-        chrome.extension.sendRequest({method: 'api', path: '/users/self/feed'}, function (feed) {
+        chrome.extension.sendRequest({method: 'ownfeed'}, function (response) {
 
-            var data = feed.data;
+            if(!response.success) {
+                // TODO display error message on screen
+                console.log('please try again later');
+                return;
+            }
+
+            var data = response.response.data;
             var divFeed = document.getElementsByClassName('feed')[0];
             
             for(var i = 0; i < data.length; i += 1) {
