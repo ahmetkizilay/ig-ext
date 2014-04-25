@@ -44,7 +44,7 @@ div.feed {
 
 img.feed {
     margin: 10px;
-    border: 2px solid black;
+    border: 2px solid #aaa;
     vertical-align: middle;
     width: 100px;
     height: 100px;
