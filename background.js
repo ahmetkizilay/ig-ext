@@ -118,7 +118,9 @@ var app = (function (config) {
 
     var _fn_setup = function () {
         chrome.storage.local.get('user_data', function (res) {
-            _user_data = res.user_data;
+            if(res.user_data) {
+                _user_data = res.user_data;
+            }
         });
     };
 
