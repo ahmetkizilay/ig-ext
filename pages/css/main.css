@@ -1,5 +1,5 @@
 body {
-    min-width: 420px;
+    min-width: 540px;
     padding-top: 50px;
 }
 
@@ -36,4 +36,16 @@ img.wait {
 label.error {
     color: red;
     padding-top: 10px;
+}
+
+div.feed {
+    margin: 15px;
+}
+
+img.feed {
+    margin: 10px;
+    border: 2px solid black;
+    vertical-align: middle;
+    width: 100px;
+    height: 100px;
 }

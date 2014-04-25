@@ -99,8 +99,33 @@ var app = (function (config) {
         xhr.send(params);
     };
 
+    var _fn_api = function (path, callback) {
+        var method = 'GET';
+        var url = 'https://api.instagram.com/v1' + path;
+        params = 'access_token=' + encodeURIComponent(_user_data.access_token);
+        url += '?' + params;
+
+        var onsuccess = function(response) {
+            var responseJSON = JSON.parse(response);
+            callback(responseJSON);
+        };
+        var onfail = function (status, response) {
+            console.log(status, response);
+        };
+        
+        _fn_sendHttpRequest(method, url, null, onsuccess, onfail);
+    };
+
+    var _fn_setup = function () {
+        chrome.storage.local.get('user_data', function (res) {
+            _user_data = res.user_data;
+        });
+    };
+
     return {
-        authenticate: _fn_authenticate
+        authenticate: _fn_authenticate,
+        api: _fn_api,
+        setup: _fn_setup
     };
 })(config);
 
@@ -110,8 +135,13 @@ chrome.extension.onRequest.addListener(function (request, tab, sendRequest) {
             sendRequest(result);
         });
     }
+
+    if(request.method === 'api') {
+        var path = request.path;
+        app.api(path, function (result) {
+            sendRequest(result);
+        });
+    }
 });
 
-//chrome.browserAction.onClicked.addListener(function (tab) {
-//  app.authenticate();
-//});
+app.setup();
