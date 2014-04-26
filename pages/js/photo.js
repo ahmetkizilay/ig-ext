@@ -112,6 +112,11 @@ var photo = (function (d) {
         // setting up like interaction
         var imgLike = d.getElementsByClassName('likes')[0]
                      .getElementsByTagName('img')[0];
+
+        if(photoData.user_has_liked) {
+            imgLike.src = 'img/heart.png';
+        }
+
         imgLike.addEventListener('mouseover', function () {
             this.style.cursor = 'pointer';
         }, false);
