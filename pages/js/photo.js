@@ -57,7 +57,7 @@ var photo = (function (d) {
         return strLikes;
     };
 
-    var _fn_fillTemplate = function (photoData) {
+    var _fn_setup = function (photoData) {
         console.dir(photoData);
 
         // adding profile picture
@@ -109,10 +109,32 @@ var photo = (function (d) {
             }
         }
 
+        // setting up like interaction
+        var imgLike = d.getElementsByClassName('likes')[0]
+                     .getElementsByTagName('img')[0];
+        imgLike.addEventListener('mouseover', function () {
+            this.style.cursor = 'pointer';
+        }, false);
+
+        imgLike.addEventListener('mouseout', function () {
+            this.style.cursor = 'auto';
+        }, false);
+
+        imgLike.addEventListener('click', function () {
+            if(this.src.indexOf('gray') != -1) {
+                this.src = 'img/heart.png';
+                // and some more...
+            }
+            else {
+                this.src = 'img/heart-gray.png';
+                // and some more...
+            }
+        }, false);
+
     };
 
     return {
-        fillTemplate: _fn_fillTemplate
+        setup: _fn_setup
     };
 
 })(document);
@@ -142,7 +164,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
 
-            photo.fillTemplate(response);
+            photo.setup(response);
         });
     });
 });
