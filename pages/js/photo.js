@@ -50,7 +50,7 @@ var photo = (function (d) {
 
                 strLikes = strLikes.slice(0, -2);
 
-                strLikes += ' and <a href=\'#\'><label>' + likes.data[givenCount - 1] + '</label></a> like this photo.';
+                strLikes += ' and <a href=\'#\'><label>' + likes.data[givenCount - 1].username + '</label></a> like this photo.';
             }
         }
 
