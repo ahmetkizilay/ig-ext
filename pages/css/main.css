@@ -5,6 +5,11 @@ body {
     background-color: #E0E2E2;
 }
 
+a {
+    font-weight: bold;
+    text-decoration: none;
+}
+
 .starter-template {
     padding: 40px 15px;
     text-align: center;
@@ -53,10 +58,6 @@ label.error {
 .top {
    opacity: 0;
    padding-left: 20px;
-}
-
-.top a {
-    text-decoration: none;
 }
 
 .middle {

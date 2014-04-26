@@ -1,3 +1,15 @@
+Array.prototype.firstMatch = function(fn) {
+    var i, len = this.length;
+
+    for(i = 0; i < len; i += 1) {
+        if(fn.call(this, this[i])) {
+            return this[i];
+        }
+    }
+
+    return null;
+};
+
 var config = {
     'client_id': 'dbe12e2ba0eb420f97f0a9af9ace03af',
     'access_token_link': 'http://localhost:2424/step_two'
@@ -63,6 +75,9 @@ var app = (function (config) {
     var _oauth_link = 'https://api.instagram.com/oauth/authorize/?client_id=' + config.client_id + '&redirect_uri=' + encodeURIComponent(_redirect_uri) + '&response_type=code';
     
     var _user_data = {};
+
+    var _cached_data = {};
+    _cached_data.feed = [];
 
     var _fn_extractParamFromUrl = function (url, id) {
         var exp = new RegExp(id + "=([^&#=]*)"),
@@ -159,6 +174,9 @@ var app = (function (config) {
         };
 
         var onsuccess = function(response) {
+            var responseJSON = JSON.parse(response);
+            Array.prototype.push.apply(_cached_data.feed, responseJSON.data);
+            console.log('cache size: '  + _cached_data.feed.length);
             callback({'success': true, 'response': JSON.parse(response)});
         };
 
@@ -168,6 +186,20 @@ var app = (function (config) {
         };
 
         api['_users_self_feed'].call(api, parameters, onsuccess, onfail);
+    };
+
+    var _fn_getCachedPhotoData = function (pid) {
+        var pData = _cached_data.feed.firstMatch(function (item) {
+            console.log(item.id);
+            return item.id === pid;
+        });
+
+        if(pData) {
+            return pData;
+        }
+        else {
+            return {found: false};
+        }
     };
 
     var _fn_setup = function () {
@@ -181,6 +213,7 @@ var app = (function (config) {
     return {
         authenticate: _fn_authenticate,
         getOwnFeed: _fn_getOwnFeed,
+        getCachedPhotoData: _fn_getCachedPhotoData,
         setup: _fn_setup
     };
 })(config);
@@ -194,6 +227,10 @@ chrome.extension.onRequest.addListener(function (request, tab, sendRequest) {
 
     if(request.method === 'ownfeed') {
         app.getOwnFeed(sendRequest);
+    }
+
+    if(request.method === 'photo') {
+        sendRequest(app.getCachedPhotoData(request.pid));
     }
 });
 

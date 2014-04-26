@@ -34,8 +34,6 @@ var loginPage = (function (d) {
 
     // http://jsfiddle.net/g9hAx/2/
     var _fn_constructImage = function (parent, imgData) {
-        console.log('start constr');
-
         var postDiv = document.createElement('div');
         postDiv.className = 'post';
 
@@ -56,6 +54,12 @@ var loginPage = (function (d) {
         aImage.setAttribute('href', '#');
         var img = document.createElement('img');
         img.setAttribute('src', imgData.images.thumbnail.url);
+        img.setAttribute('data-pid', imgData.id);
+        img.addEventListener('click', function () {
+            var pid = this.getAttribute('data-pid');
+            console.log(pid);
+            location.href = '/pages/photo.html#' + pid;
+        });
         aImage.appendChild(img);
         middleDiv.appendChild(aImage);
         // end middle div

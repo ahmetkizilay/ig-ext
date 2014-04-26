@@ -1,0 +1,73 @@
+.photo {
+    margin-top: 15px;
+    width: 540px;
+    /* border: dashed 1px black; */
+    margin-bottom: 15px;
+}
+
+.head {
+    padding-left: 20px;
+}
+
+.head .avatar {
+    float: left;
+    padding-right: 5px;
+}
+
+.head .avatar img {
+    width: 45px;
+    height: 45px;
+}
+
+.head .userdate {
+    float: left;
+    vertical-align: top;
+}
+
+.head .location {
+    height: 50px;
+    float: right;
+    padding-top: 20px;
+    padding-right: 20px;
+}
+
+.head .location img {
+    width: 12px;
+    height: 12px;
+    margin-right: 2px;
+}
+
+.imgHolder {
+    margin-top: 5px;
+    text-align: center;
+}
+
+.imgHolder img {
+    width: 500px;
+    height: 500px;
+}
+
+.likes {
+    padding-left: 20px;
+    margin-top: 5px;
+    line-height: 16px;
+    margin-bottom: 10px;
+}
+
+.likes img {
+    width: 16px;
+    height: 16px;
+    margin-right: 4px;
+}
+
+.comments {
+    padding-left: 20px;
+}
+
+.comments .comment span {
+    margin-left: 5px;
+}
+
+.caption {
+    margin-bottom: 10px;
+}
