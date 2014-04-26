@@ -69,7 +69,9 @@ var photo = (function (d) {
         // adding post date
         var date = d.getElementsByClassName('userdate')[0]
                     .getElementsByTagName('label')[0];
-        date.innerHTML = new Date(photoData.created_time * 1000).toDateString();
+        var dateObj = new Date(photoData.created_time * 1000);
+        var dateStr = dateObj.toDateString() + ' ' + /^[0-9]{1,2}:[0-9]{1,2}/.exec(dateObj.toTimeString());
+        date.innerHTML = dateStr;
 
         // adding username
         var username = d.getElementsByClassName('userdate')[0]
