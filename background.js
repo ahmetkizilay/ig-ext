@@ -72,7 +72,10 @@ var api = (function () {
 var app = (function (config) {
     var _app_id = chrome.runtime.id;
     var _redirect_uri = 'https://' + _app_id + '.chromiumapp.org/oauth-redirect.html';
-    var _oauth_link = 'https://api.instagram.com/oauth/authorize/?client_id=' + config.client_id + '&redirect_uri=' + encodeURIComponent(_redirect_uri) + '&response_type=code';
+    var _oauth_link = 'https://api.instagram.com/oauth/authorize/?client_id=' +
+                       config.client_id + '&redirect_uri=' +
+                       encodeURIComponent(_redirect_uri) +
+                       '&response_type=code&scope=comments+likes';
     
     var _user_data = {};
 
