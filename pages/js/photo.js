@@ -127,7 +127,7 @@ var photo = (function (d) {
 
         imgLike.addEventListener('click', function () {
             if(this.src.indexOf('gray') !== -1) {
-                _fn_likePost(photoData.id, this);
+               _fn_likePost(photoData.id, this);
             }
             else {
                 _fn_unlikePost(photoData.id, this);
@@ -142,6 +142,10 @@ var photo = (function (d) {
             console.log('like result', response.success);
             if(response.success) {
                 img.src = 'img/heart.png';
+                NOTIFY.notify('You just liked this photo!', {
+                    parent: d.getElementsByTagName('body')[0],
+                    top: 60
+                });
             }
         });
     };
@@ -152,6 +156,10 @@ var photo = (function (d) {
             console.log('unlike result', response.success);
             if(response.success) {
                 img.src = 'img/heart-gray.png';
+                NOTIFY.notify('You just unliked this photo!', {
+                    parent: d.getElementsByTagName('body')[0],
+                    top: 60
+                });
             }
         });
     };

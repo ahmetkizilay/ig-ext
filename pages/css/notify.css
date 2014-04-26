@@ -1,0 +1,45 @@
+.notification {
+    float: left;
+    min-width: 10px;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    position: absolute;
+    left: 10px;
+    top: 0;
+    opacity: 0;
+    z-index: 300;
+    -webkit-animation:slideIn 2s; /* Chrome, Safari, Opera */
+    animation:slideIn 2s;
+}
+
+.info {
+    background-color: #888;
+}
+
+.warning {
+    background-color: #ffff4c;
+}
+
+.error {
+    background-color: #bf0000;
+}
+.notification span {
+    font-weight: bold;
+    color: #ddd;
+}
+
+@-webkit-keyframes slideIn
+{
+0%   {left: -200px; opacity: 1;}
+50%  {left: 10px; opacity: 1;}
+100% {opacity: 0;}
+}
+
+@keyframes slideIn
+{
+0%   {left: -200px; opacity: 1;}
+50%  {left: 10px; opacity: 1;}
+100% {opacity: 0;}
+}
