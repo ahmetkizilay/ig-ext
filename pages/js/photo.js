@@ -126,16 +126,34 @@ var photo = (function (d) {
         }, false);
 
         imgLike.addEventListener('click', function () {
-            if(this.src.indexOf('gray') != -1) {
-                this.src = 'img/heart.png';
-                // and some more...
+            if(this.src.indexOf('gray') !== -1) {
+                _fn_likePost(photoData.id, this);
             }
             else {
-                this.src = 'img/heart-gray.png';
-                // and some more...
+                _fn_unlikePost(photoData.id, this);
             }
         }, false);
 
+    };
+
+    var _fn_likePost = function(pid, img) {
+        console.log('about to like this post');
+        chrome.extension.sendRequest({'method': 'like', 'pid': pid}, function (response) {
+            console.log('like result', response.success);
+            if(response.success) {
+                img.src = 'img/heart.png';
+            }
+        });
+    };
+
+    var _fn_unlikePost = function(pid, img) {
+        console.log('about to unlike this post');
+        chrome.extension.sendRequest({'method': 'unlike', 'pid': pid}, function (response) {
+            console.log('unlike result', response.success);
+            if(response.success) {
+                img.src = 'img/heart-gray.png';
+            }
+        });
     };
 
     return {
