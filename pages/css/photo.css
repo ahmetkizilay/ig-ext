@@ -47,6 +47,11 @@
     height: 500px;
 }
 
+.imgHolder video {
+    width: 500px;
+    height: 500px;
+}
+
 .likes {
     padding-left: 20px;
     margin-top: 5px;

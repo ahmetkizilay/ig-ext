@@ -88,9 +88,24 @@ var photo = (function (d) {
         }
 
         // adding the image
-        var img = d.getElementsByClassName('imgHolder')[0]
-                   .getElementsByTagName('img')[0];
-        img.src = photoData.images.standard_resolution.url;
+        var divImageHolder = d.getElementsByClassName('imgHolder')[0];
+        if(photoData.videos) { // this is a video
+            var video = d.createElement('video');
+            var srcVideo = d.createElement('source');
+            var videoUrl = photoData.videos.standard_resolution.url;
+            var videoType = videoUrl.substring(videoUrl.lastIndexOf('.') + 1);
+
+            video.setAttribute('controls', 'controls');
+            srcVideo.src = videoUrl;
+            srcVideo.type = "video/" + videoType;
+
+            video.appendChild(srcVideo);
+            divImageHolder.appendChild(video);
+        } else {
+            var img = d.createElement('img');
+            img.src = photoData.images.standard_resolution.url;
+            divImageHolder.appendChild(img);
+        }
 
         // creating likes
         var spanLikes = d.getElementById('strLikes');
