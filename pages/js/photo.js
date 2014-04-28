@@ -1,5 +1,9 @@
 var photo = (function (d) {
 
+    var _fn_createUserLink = function (uid, username) {
+        return '<a href="#" data-uid="' + uid + '" class="link-profile">' + username + '</a>';
+    };
+
     var _fn_createCommentBlock = function (parent, comment, isCaption) {
         var divComment = d.createElement('div');
         divComment.className = 'comment';
@@ -10,9 +14,8 @@ var photo = (function (d) {
         var aCommenter = d.createElement('a');
         aCommenter.setAttribute('href', '#');
         aCommenter.innerHTML = comment.from.username;
-        aCommenter.addEventListener('click', function() {
-            location.href = 'profile.html#' + comment.from.id;
-        });
+        aCommenter.setAttribute('data-uid', comment.from.id);
+        aCommenter.className += ' link-profile';
         divComment.appendChild(aCommenter);
 
         var spanComment = d.createElement('span');
@@ -35,11 +38,11 @@ var photo = (function (d) {
         else {
 
             if(givenCount === 1) {
-                strLikes = '<a href=\'#\'><label>' + likes.data[0].username + '</label></a> likes this photo.';
+                strLikes = _fn_createUserLink(likes.data[0].id, likes.data[0].username) + ' likes this photo.';
             }
             else if(givenCount < likeCount) {
                 for(i = 0; i < givenCount; i += 1) {
-                    strLikes += '<a href="#"><label>' + likes.data[i].username + '</label></a>' + ', ';
+                    strLikes += _fn_createUserLink(likes.data[i].id, likes.data[i].username) + ', ';
                 }
 
                 strLikes = strLikes.slice(0, -2);
@@ -48,7 +51,7 @@ var photo = (function (d) {
             }
             else {
                 for(i = 0; i < (givenCount - 1); i += 1) {
-                    strLikes += '<a href="#"><label>' + likes.data[i].username + '</label></a>' + ', ';
+                    strLikes += _fn_createUserLink(likes.data[i].id, likes.data[i].username) + ', ';
                 }
 
                 strLikes = strLikes.slice(0, -2);
@@ -65,9 +68,10 @@ var photo = (function (d) {
 
         // adding profile picture
         var profilePicture = d.getElementsByClassName('avatar')[0]
-                              .getElementsByTagName('a')[0]
                               .getElementsByTagName('img')[0];
         profilePicture.src = photoData.user.profile_picture;
+        profilePicture.setAttribute('data-uid', photoData.user.id);
+        profilePicture.className += ' link-profile';
 
         // adding post date
         var date = d.getElementsByClassName('userdate')[0]
@@ -80,9 +84,8 @@ var photo = (function (d) {
         var username = d.getElementsByClassName('userdate')[0]
                         .getElementsByTagName('a')[0];
         username.innerHTML = photoData.user.username;
-        username.addEventListener('click', function () {
-            location.href = 'profile.html#' + photoData.user.id;
-        });
+        username.setAttribute('data-uid', photoData.user.id);
+        username.className += ' link-profile';
         
         // adding location
         var divLocation = d.getElementsByClassName('location')[0];
@@ -218,6 +221,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             photo.setup(response.data);
+            common.createProfileLinks();
         });
     });
 });

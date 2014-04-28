@@ -43,9 +43,8 @@ var loginPage = (function (d) {
         var aUser = document.createElement('a');
         aUser.innerHTML = imgData.user.username;
         aUser.setAttribute('href', '#');
-        aUser.addEventListener('click', function () {
-            location.href = 'profile.html#' + imgData.user.id;
-        });
+        aUser.setAttribute('data-uid', imgData.user.id);
+        aUser.className += ' link-profile';
         topDiv.appendChild(aUser);
         // end top div
 
@@ -146,6 +145,8 @@ document.addEventListener('DOMContentLoaded', function() {
             for(var i = 0; i < data.length; i += 1) {
                 loginPage.constructImage(divFeed, data[i]);
             }
+
+            common.createProfileLinks();
         });
     });
 });

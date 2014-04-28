@@ -221,6 +221,5 @@ document.addEventListener('DOMContentLoaded', function() {
 
         profile.setup(uid);
 
-
     });
 });
