@@ -43,6 +43,9 @@ var loginPage = (function (d) {
         var aUser = document.createElement('a');
         aUser.innerHTML = imgData.user.username;
         aUser.setAttribute('href', '#');
+        aUser.addEventListener('click', function () {
+            location.href = 'profile.html#' + imgData.user.id;
+        });
         topDiv.appendChild(aUser);
         // end top div
 

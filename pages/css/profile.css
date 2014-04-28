@@ -1,0 +1,114 @@
+.user {
+    margin-top: 20px;
+    display: block;
+    height: 150px;
+    margin-left: 5px;
+}
+
+.avatar {
+    float: left;
+}
+
+.avatar img {
+    width: 100px;
+    height: 100px;
+}
+
+.follow {
+    margin-top: 5px;
+}
+
+.follow button {
+    width: 100px;
+}
+
+.userinfo {
+    float: left;
+    margin-left: 5px;
+    max-width: 400px;
+}
+
+.userinfo a {
+    margin-right: 5px;
+}
+
+.userinfo .bio {
+    font-weight: normal;
+    font-size: 12px;
+    word-wrap:break-word;
+}
+
+.usercounts {
+    margin-top: 6px;
+}
+
+.usercounts div {
+    float: left;
+    text-align: center;
+}
+
+.usercounts div:not(:last-child) {
+    margin-right: 12px;
+}
+
+.usercounts span {
+    display: inline-block;
+}
+
+.posts {
+    padding-top: 15px;
+    margin-left: -5px;
+}
+
+.post {
+    width: 165px;
+    line-height: 25px;
+    float: left;
+}
+
+.top {
+    opacity: 0;
+    margin-bottom: 0;
+    padding-bottom: 0;
+    text-align: center;
+}
+
+.top .date {
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.middle {
+    text-align: center;
+}
+
+.middle img {
+    margin-top: 2px;
+    border: solid 2px #aaa;
+    vertical-align: middle;
+    width: 125px;
+    height: 125px;
+}
+
+.bottom {
+    padding-left: 0;
+    opacity: 0;
+    text-align: center;
+}
+
+.bottom img {
+    padding-right: 2px;
+    width: 12px;
+    height: 12px;
+}
+
+.bottom img:nth-of-type(2) {
+    margin-left: 5px;
+}
+
+.appear-with-ease {
+    opacity: 1;
+    transition: opacity 1s;
+    transition-timing-function: ease;
+  
+}

@@ -1,0 +1,53 @@
+.feed {
+    padding-top: 15px;
+}
+
+.post {
+    width: 165px;
+    line-height: 25px;
+    float: left;
+}
+
+.top {
+   opacity: 0;
+   padding-left: 20px;
+}
+
+.middle {
+    text-align: center;
+}
+
+.middle img {
+    margin-top: 2px;
+    border: solid 2px #aaa;
+    vertical-align: middle;
+    width: 125px;
+    height: 125px;
+}
+
+.bottom {
+    padding-left: 2px;
+    opacity: 0;
+    text-align: left;
+}
+
+.bottom img {
+    padding-right: 2px;
+    width: 12px;
+    height: 12px;
+}
+
+.bottom img:nth-of-type(2) {
+    margin-left: 5px;
+}
+
+.bottom label:last-of-type {
+    float: right;
+}
+
+.appear-with-ease {
+    opacity: 1;
+    transition: opacity 1s;
+    transition-timing-function: ease;
+  
+}

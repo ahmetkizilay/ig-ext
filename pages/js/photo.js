@@ -10,6 +10,9 @@ var photo = (function (d) {
         var aCommenter = d.createElement('a');
         aCommenter.setAttribute('href', '#');
         aCommenter.innerHTML = comment.from.username;
+        aCommenter.addEventListener('click', function() {
+            location.href = 'profile.html#' + comment.from.id;
+        });
         divComment.appendChild(aCommenter);
 
         var spanComment = d.createElement('span');
@@ -77,7 +80,10 @@ var photo = (function (d) {
         var username = d.getElementsByClassName('userdate')[0]
                         .getElementsByTagName('a')[0];
         username.innerHTML = photoData.user.username;
-
+        username.addEventListener('click', function () {
+            location.href = 'profile.html#' + photoData.user.id;
+        });
+        
         // adding location
         var divLocation = d.getElementsByClassName('location')[0];
         if(photoData.location && photoData.location.name) {
@@ -203,14 +209,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
         var pid = location.href.substring(location.href.indexOf('#') + 1);
         console.log('this is the pid', pid);
+
         chrome.extension.sendRequest({method: 'photo', 'pid': pid}, function (response) {
 
-            if(response.found) {
+            if(!response.success) {
                 console.log('could not find the image');
                 return;
             }
 
-            photo.setup(response);
+            photo.setup(response.data);
         });
     });
 });

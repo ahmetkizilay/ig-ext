@@ -66,6 +66,21 @@ var api = (function () {
         _fn_sendHttpRequest(method, url, null, onsuccess, onfail);
     };
 
+    _methods.get_users_userid_media_recent = function () {
+        var user_id = arguments[0];
+        var parameters = arguments[1];
+        var onsuccess = arguments[2];
+        var onfail = arguments[3];
+
+        var method = 'GET';
+        var endpoint = '/users/' + user_id + '/media/recent/';
+        var paramString = _fn_buildParamString(parameters);
+
+        var url = _base_url + endpoint + '?' + paramString;
+
+        _fn_sendHttpRequest(method, url, null, onsuccess, onfail);
+    };
+
     _methods.post_media_mediaid_likes = function() {
         var media_id = arguments[0];
         var parameters = arguments[1];
@@ -96,6 +111,51 @@ var api = (function () {
         _fn_sendHttpRequest(method, url, paramString, onsuccess, onfail);
     };
 
+    _methods.get_users_userid = function() {
+        var user_id = arguments[0];
+        var parameters = arguments[1];
+        var onsuccess = arguments[2];
+        var onfail = arguments[3];
+
+        var method = 'GET';
+        var endpoint = '/users/' + user_id + '/';
+        var paramString = _fn_buildParamString(parameters);
+
+        var url = _base_url + endpoint + '?' + paramString;
+
+        _fn_sendHttpRequest(method, url, paramString, onsuccess, onfail);
+    };
+
+    _methods.get_users_userid_relationship = function() {
+        var user_id = arguments[0];
+        var parameters = arguments[1];
+        var onsuccess = arguments[2];
+        var onfail = arguments[3];
+
+        var method = 'GET';
+        var endpoint = '/users/' + user_id + '/relationship';
+        var paramString = _fn_buildParamString(parameters);
+
+        var url = _base_url + endpoint + '?' + paramString;
+
+        _fn_sendHttpRequest(method, url, paramString, onsuccess, onfail);
+    };
+
+    _methods.get_media_mediaid = function() {
+        var media_id = arguments[0];
+        var parameters = arguments[1];
+        var onsuccess = arguments[2];
+        var onfail = arguments[3];
+
+        var method = 'GET';
+        var endpoint = '/media/' + media_id + '/';
+        var paramString = _fn_buildParamString(parameters);
+
+        var url = _base_url + endpoint + '?' + paramString;
+
+        _fn_sendHttpRequest(method, url, paramString, onsuccess, onfail);
+    };
+
     return _methods;
 })();
 
@@ -105,12 +165,14 @@ var app = (function (config) {
     var _oauth_link = 'https://api.instagram.com/oauth/authorize/?client_id=' +
                        config.client_id + '&redirect_uri=' +
                        encodeURIComponent(_redirect_uri) +
-                       '&response_type=code&scope=comments+likes';
+                       '&response_type=code&scope=comments+likes+relationships';
     
     var _user_data = {};
 
-    var _cached_data = {};
-    _cached_data.feed = [];
+    var _cached_data = {
+        feed: [],
+        users: []
+    };
 
     var _fn_extractParamFromUrl = function (url, id) {
         var exp = new RegExp(id + "=([^&#=]*)"),
@@ -221,6 +283,89 @@ var app = (function (config) {
         api['_users_self_feed'].call(api, parameters, onsuccess, onfail);
     };
 
+    var _fn_getUserFeed = function (uid, callback) {
+        var parameters = {
+            'access_token': _user_data.access_token
+        };
+
+        var onsuccess = function(response) {
+            var responseJSON = JSON.parse(response);
+            console.dir(responseJSON.data);
+
+            callback({'success': true, 'data': responseJSON.data });
+        };
+
+        var onfail = function(status, msg) {
+            console.log('getUserFeed returned error: ', status, msg);
+            callback({'success': false});
+        };
+
+        api['get_users_userid_media_recent'].call(api, uid, parameters, onsuccess, onfail);
+    };
+
+    var _fn_getUser = function (uid, callback) {
+        var parameters = {
+            'access_token': _user_data.access_token
+        };
+
+        var onsuccess = function(response) {
+            var responseJSON = JSON.parse(response);
+            console.dir(responseJSON.data);
+
+            Array.prototype.push.apply(_cached_data.users, responseJSON.data);
+            console.log('users cache size: '  + _cached_data.users.length);
+            
+            callback({'success': true, 'data': responseJSON.data });
+        };
+
+        var onfail = function(status, msg) {
+            console.log('getOwnFeed returned error: ', status, msg);
+            callback({'success': false});
+        };
+
+        api['get_users_userid'].call(api, uid, parameters, onsuccess, onfail);
+    };
+
+    var _fn_getRelationship = function (uid, callback) {
+        var parameters = {
+            'access_token': _user_data.access_token
+        };
+
+        var onsuccess = function(response) {
+            var responseJSON = JSON.parse(response);
+            console.dir(responseJSON.data);
+
+            callback({'success': true, 'data': responseJSON.data });
+        };
+
+        var onfail = function(status, msg) {
+            console.log('getRelationship returned error: ', status, msg);
+            callback({'success': false});
+        };
+
+        api['get_users_userid_relationship'].call(api, uid, parameters, onsuccess, onfail);
+    };
+
+    var _fn_getMedia = function (pid, callback) {
+        var parameters = {
+            'access_token': _user_data.access_token
+        };
+
+        var onsuccess = function(response) {
+            var responseJSON = JSON.parse(response);
+            console.dir(responseJSON.data);
+
+            callback({'success': true, 'data': responseJSON.data });
+        };
+
+        var onfail = function(status, msg) {
+            console.log('getMedia returned error: ', status, msg);
+            callback({'success': false});
+        };
+
+        api['get_media_mediaid'].call(api, pid, parameters, onsuccess, onfail);
+    };
+
     var _fn_getCachedPhotoData = function (pid) {
         var pData = _cached_data.feed.firstMatch(function (item) {
             return item.id === pid;
@@ -283,7 +428,11 @@ var app = (function (config) {
         getOwnFeed: _fn_getOwnFeed,
         likePhoto: _fn_likePhoto,
         unlikePhoto: _fn_unlikePhoto,
+        getUser: _fn_getUser,
+        getRelationship: _fn_getRelationship,
+        getUserFeed: _fn_getUserFeed,
         getCachedPhotoData: _fn_getCachedPhotoData,
+        getMedia: _fn_getMedia,
         setup: _fn_setup
     };
 })(config);
@@ -299,8 +448,12 @@ chrome.extension.onRequest.addListener(function (request, tab, sendRequest) {
         app.getOwnFeed(sendRequest);
     }
 
+    if(request.method === 'feed') {
+        app.getUserFeed(request.uid, sendRequest);
+    }
+
     if(request.method === 'photo') {
-        sendRequest(app.getCachedPhotoData(request.pid));
+        app.getMedia(request.pid, sendRequest);
     }
 
     if(request.method === 'like') {
@@ -309,6 +462,14 @@ chrome.extension.onRequest.addListener(function (request, tab, sendRequest) {
 
     if(request.method === 'unlike') {
         app.unlikePhoto(request.pid, sendRequest);
+    }
+
+    if(request.method === 'user') {
+        app.getUser(request.uid, sendRequest);
+    }
+
+    if(request.method === 'relationship') {
+        app.getRelationship(request.uid, sendRequest);
     }
 });
 

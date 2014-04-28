@@ -5,11 +5,12 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 
-        <title>Chrome Instagram Extension Feeds</title>
+        <title>Chrome Instagram Extension Profile</title>
 
         <link href="../libs/bootstrap-3.1.1-dist/css/bootstrap.min.css" rel="stylesheet">
+        <link href="css/notify.css" rel="stylesheet">
         <link href="css/main.css" rel="stylesheet">
-        <link href="css/feed.css" rel="stylesheet">
+        <link href="css/profile.css" rel="stylesheet">
     </head>
     <body>
         <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
@@ -21,7 +22,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand profile" href="#"><img class="profile" id="imgProfile" src="http://www5.pcmag.com/media/images/352677-instagram-logo.jpg?thumb=y"/></a>
+                    <a class="navbar-brand profile" href="#"><img class="profile" id="imgProfile" src="img/ig-black.jpg"/></a>
                     <label class="profile" id="lblProfile"></label>
                 </div>
                 <div class="collapse navbar-collapse">
@@ -35,13 +36,40 @@
         </div>
 
         <div class="container">
-            <div class="feed">
-                
+            <div class="user">
+                <div class="avatar">
+                    <img src="" />
+                    <div class="follow">
+                        <button id="btnFollow"></button>
+                    </div>
+                </div>
+                <div class="userinfo">
+                    <a href="#" id="user_name"></a><label id="user_full_name"></label><br />
+                    <label class="bio" id="bio"></label>
+                    <div class="usercounts">
+                        <div>
+                            <a href='#' id="posts_count">0</a><br />
+                            <label>posts</label>
+                        </div>
+                        <div>
+                            <a href='#' id="followers_count">0</a><br />
+                            <label>followers</label>
+                        </div>
+                        <div>
+                            <a href='#' id="following_count">0</a><br />
+                            <label>following</label>
+                        </div>
+                    </div>
+                </div>
             </div>
+
+            <div class="posts"></div>
         </div>
 
         <script src="../libs/jquery-1.11.0.min.js"></script>
         <script src="../libs/bootstrap-3.1.1-dist/js/bootstrap.min.js"></script>
-        <script src="js/feeds.js"></script>
+        <script src="js/notify.js"></script>
+        <script src="js/profile.js"></script>
+
     </body>
 </html>
