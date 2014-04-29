@@ -1,7 +1,7 @@
 var photo = (function (d) {
 
     var _fn_createUserLink = function (uid, username) {
-        return '<a href="#" data-uid="' + uid + '" class="link-profile">' + username + '</a>';
+        return '<a href="#" data-uid="' + uid + '" data-uname="' + username + '" class="link-profile">' + username + '</a>';
     };
 
     var _fn_createCommentBlock = function (parent, comment, isCaption) {
@@ -15,6 +15,7 @@ var photo = (function (d) {
         aCommenter.setAttribute('href', '#');
         aCommenter.innerHTML = comment.from.username;
         aCommenter.setAttribute('data-uid', comment.from.id);
+        aCommenter.setAttribute('data-uname', comment.from.username);
         aCommenter.className += ' link-profile';
         divComment.appendChild(aCommenter);
 
@@ -56,7 +57,7 @@ var photo = (function (d) {
 
                 strLikes = strLikes.slice(0, -2);
 
-                strLikes += ' and <a href=\'#\'><label>' + likes.data[givenCount - 1].username + '</label></a> like this photo.';
+                strLikes += ' and ' + _fn_createUserLink(likes.data[i].id, likes.data[i].username) + ' like this photo.';
             }
         }
 
@@ -71,6 +72,7 @@ var photo = (function (d) {
                               .getElementsByTagName('img')[0];
         profilePicture.src = photoData.user.profile_picture;
         profilePicture.setAttribute('data-uid', photoData.user.id);
+        profilePicture.setAttribute('data-uname', photoData.user.username);
         profilePicture.className += ' link-profile';
 
         // adding post date
@@ -85,6 +87,7 @@ var photo = (function (d) {
                         .getElementsByTagName('a')[0];
         username.innerHTML = photoData.user.username;
         username.setAttribute('data-uid', photoData.user.id);
+        username.setAttribute('data-uname', photoData.user.username);
         username.className += ' link-profile';
         
         // adding location

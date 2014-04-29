@@ -112,3 +112,11 @@
     transition-timing-function: ease;
   
 }
+
+.center-text {
+    text-align: center;
+}
+
+.private {
+    display: block;
+}

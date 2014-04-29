@@ -9,12 +9,25 @@ var profile = (function (d) {
         return result;
     };
 
-    var _fn_setup = function (uid) {
+    var _fn_setup = function (uid, uname) {
+
+        // setting username by default in case the user is private
+        d.getElementById('user_name').innerHTML = uname;
 
         chrome.extension.sendRequest({method: 'user', 'uid': uid}, function (response) {
 
-            if(response.found) {
-                console.log('could not find the user');
+            if(!response.success) {
+
+                var errJSON = JSON.parse(response.err);
+                console.dir(errJSON);
+
+                if(errJSON.meta && errJSON.meta.error_type == 'APINotAllowedError') {
+                    NOTIFY.notify(errJSON.meta.error_message, {
+                        parent: d.getElementsByTagName('body')[0],
+                        top: 60,
+                        level: 'error'
+                    });
+                }
                 return;
             }
 
@@ -24,8 +37,18 @@ var profile = (function (d) {
 
         chrome.extension.sendRequest({method: 'relationship', 'uid': uid}, function (response) {
 
-            if(response.found) {
-                console.log('could not find the user');
+            if(!response.success) {
+
+                var errJSON = JSON.parse(response.err);
+                console.dir(errJSON);
+
+                if(errJSON.meta) {
+                    NOTIFY.notify(errJSON.meta.error_message, {
+                        parent: d.getElementsByTagName('body')[0],
+                        top: 60,
+                        level: 'error'
+                    });
+                }
                 return;
             }
 
@@ -34,8 +57,18 @@ var profile = (function (d) {
         });
 
         chrome.extension.sendRequest({method: 'feed', 'uid': uid}, function (response) {
-            if(response.found) {
-                console.log('could not retrieve results');
+            if(!response.success) {
+
+                var errJSON = JSON.parse(response.err);
+                console.dir(errJSON);
+
+                if(errJSON.meta && errJSON.meta.error_type == 'APINotAllowedError') {
+                    NOTIFY.notify(errJSON.meta.error_message, {
+                        parent: d.getElementsByTagName('body')[0],
+                        top: 60,
+                        level: 'error'
+                    });
+                }
                 return;
             }
 
@@ -60,6 +93,25 @@ var profile = (function (d) {
         }
 
         var relData = response.data;
+
+        if(relData.target_user_is_private && relData.outgoing_status !== 'follows') {
+
+            var lblPrivate = d.createElement('label');
+            lblPrivate.className = 'private';
+            lblPrivate.innerHTML = 'This user is private';
+
+            var lblPrivate2 = d.createElement('label');
+            lblPrivate2.className = 'private';
+            lblPrivate2.innerHTML = 'You need to follow this person to view their posts.';
+
+            var container = d.getElementsByClassName('posts')[0];
+            container.className += ' center-text';
+            container.appendChild(lblPrivate);
+            container.appendChild(lblPrivate2);
+
+            var avatar = d.getElementById('avatar');
+            avatar.src = 'img/ig-black.jpg';
+        }
 
         var btnFollow = d.getElementById('btnFollow');
         switch(relData.outgoing_status) {
@@ -216,10 +268,11 @@ document.addEventListener('DOMContentLoaded', function() {
         var imgProfile = document.getElementById('imgProfile');
         imgProfile.src = user_data.profile_picture;
 
-        var uid = location.href.substring(location.href.indexOf('#') + 1);
-        console.log('this is the uid', uid);
+        var queryParams = common.getQueryParams(location.search);
+        var uid = queryParams.uid;
+        var uname = queryParams.uname;
 
-        profile.setup(uid);
+        profile.setup(uid, uname);
 
     });
 });

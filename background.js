@@ -296,8 +296,8 @@ var app = (function (config) {
         };
 
         var onfail = function(status, msg) {
-            console.log('getUserFeed returned error: ', status, msg);
-            callback({'success': false});
+            console.log('getUserFeed response: ', status, msg);
+            callback({'success': false, 'err': msg});
         };
 
         api['get_users_userid_media_recent'].call(api, uid, parameters, onsuccess, onfail);
@@ -319,8 +319,8 @@ var app = (function (config) {
         };
 
         var onfail = function(status, msg) {
-            console.log('getOwnFeed returned error: ', status, msg);
-            callback({'success': false});
+            console.log('getUser response: ', status, msg);
+            callback({'success': false, 'err': msg});
         };
 
         api['get_users_userid'].call(api, uid, parameters, onsuccess, onfail);
@@ -339,8 +339,8 @@ var app = (function (config) {
         };
 
         var onfail = function(status, msg) {
-            console.log('getRelationship returned error: ', status, msg);
-            callback({'success': false});
+            console.log('getRelationship response: ', status, msg);
+            callback({'success': false, 'err': msg});
         };
 
         api['get_users_userid_relationship'].call(api, uid, parameters, onsuccess, onfail);

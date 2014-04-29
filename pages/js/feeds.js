@@ -44,6 +44,7 @@ var loginPage = (function (d) {
         aUser.innerHTML = imgData.user.username;
         aUser.setAttribute('href', '#');
         aUser.setAttribute('data-uid', imgData.user.id);
+        aUser.setAttribute('data-uname', imgData.user.username);
         aUser.className += ' link-profile';
         topDiv.appendChild(aUser);
         // end top div
