@@ -213,8 +213,11 @@ document.addEventListener('DOMContentLoaded', function() {
         var imgProfile = document.getElementById('imgProfile');
         imgProfile.src = user_data.profile_picture;
 
-        var pid = location.href.substring(location.href.indexOf('#') + 1);
+        var queryParams = common.getQueryParams(location.search);
+        var pid = queryParams.pid;
         console.log('this is the pid', pid);
+
+        common.setupNavigation();
 
         chrome.extension.sendRequest({method: 'photo', 'pid': pid}, function (response) {
 

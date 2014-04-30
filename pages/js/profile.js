@@ -198,7 +198,7 @@ var profile = (function (d) {
         img.addEventListener('click', function () {
             var pid = this.getAttribute('data-pid');
             console.log(pid);
-            location.href = '/pages/photo.html#' + pid;
+            location.href = '/pages/photo.html?pid=' + pid;
         });
         aImage.appendChild(img);
         middleDiv.appendChild(aImage);
@@ -261,6 +261,8 @@ document.addEventListener('DOMContentLoaded', function() {
             location.href = '/pages/login.html';
             return;
         }
+    
+        common.setupNavigation();
 
         var lblProfile = document.getElementById("lblProfile");
         lblProfile.innerHTML = user_data.full_name;

@@ -415,12 +415,31 @@ var app = (function (config) {
         api['del_media_mediaid_likes'].call(api, pid, parameters, onsuccess, onfail);
     };
 
+    var _fn_history = function (params, callback) {
+        switch(params.action) {
+            case 'add':
+                History.add(params.address);
+                console.log('added', params.address);
+                break;
+            case 'back':
+                callback(History.back());
+                break;
+            case 'fwd':
+                callback(History.fwd());
+                break;
+            default:
+                break;
+        }
+    };
+
     var _fn_setup = function () {
+
         chrome.storage.local.get('user_data', function (res) {
             if(res.user_data) {
                 _user_data = res.user_data;
             }
         });
+
     };
 
     return {
@@ -433,11 +452,16 @@ var app = (function (config) {
         getUserFeed: _fn_getUserFeed,
         getCachedPhotoData: _fn_getCachedPhotoData,
         getMedia: _fn_getMedia,
+        history: _fn_history,
         setup: _fn_setup
     };
 })(config);
 
 chrome.extension.onRequest.addListener(function (request, tab, sendRequest) {
+    if(request.method === "history") {
+        app.history(request.params, sendRequest);
+    }
+
     if(request.method === 'auth') {
         app.authenticate(function (result) {
             sendRequest(result);

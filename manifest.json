@@ -10,7 +10,7 @@
     "version": "0.1",
 
     "background": {
-        "scripts": ["background.js"]
+        "scripts": ["libs/my-history.min.js", "background.js"]
     },
 
     "browser_action": {

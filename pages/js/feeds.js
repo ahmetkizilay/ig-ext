@@ -61,7 +61,7 @@ var loginPage = (function (d) {
         img.addEventListener('click', function () {
             var pid = this.getAttribute('data-pid');
             console.log(pid);
-            location.href = '/pages/photo.html#' + pid;
+            location.href = '/pages/photo.html?pid=' + pid;
         });
         aImage.appendChild(img);
         middleDiv.appendChild(aImage);
@@ -125,11 +125,14 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
+
         var lblProfile = document.getElementById("lblProfile");
         lblProfile.innerHTML = user_data.full_name;
 
         var imgProfile = document.getElementById('imgProfile');
         imgProfile.src = user_data.profile_picture;
+
+        common.setupNavigation();
 
         // loading user feed
         chrome.extension.sendRequest({method: 'ownfeed'}, function (response) {
