@@ -44,7 +44,7 @@ var hashtags = (function (d) {
         aUser.setAttribute('href', '#');
         aUser.setAttribute('data-uid', post.user.id);
         aUser.setAttribute('data-uname', post.user.username);
-        aUser.className += ' link-profile';
+        aUser.className = 'link-profile';
         topDiv.appendChild(aUser);
         // end top div
 
@@ -152,6 +152,8 @@ var hashtags = (function (d) {
             response.data.forEach(function (post) {
                 _fn_constructImage(parent, post);
             });
+
+            common.createProfileLinks();
         });
     };
 

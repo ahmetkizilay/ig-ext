@@ -9,19 +9,16 @@ var profile = (function (d) {
         return result;
     };
 
-    var _fn_setup = function (uid, uname) {
-
-        // setting username by default in case the user is private
-        d.getElementById('user_name').innerHTML = uname;
-
+    var _fn_handleCounts = function (uid) {
         chrome.extension.sendRequest({method: 'user', 'uid': uid}, function (response) {
 
             if(!response.success) {
 
+                console.log(response.err);
                 var errJSON = JSON.parse(response.err);
                 console.dir(errJSON);
 
-                if(errJSON.meta && errJSON.meta.error_type == 'APINotAllowedError') {
+                if(errJSON.meta) {
                     NOTIFY.notify(errJSON.meta.error_message, {
                         parent: d.getElementsByTagName('body')[0],
                         top: 60,
@@ -31,10 +28,12 @@ var profile = (function (d) {
                 return;
             }
 
-            _fn_fillUserData(response);
+            _fn_fillCounts(response.data.counts);
 
         });
+    };
 
+    var _fn_handleRelationship = function (uid) {
         chrome.extension.sendRequest({method: 'relationship', 'uid': uid}, function (response) {
 
             if(!response.success) {
@@ -55,7 +54,9 @@ var profile = (function (d) {
             _fn_fillRelationData(response);
 
         });
+    };
 
+    var _fn_handleFeed = function (uid) {
         chrome.extension.sendRequest({method: 'feed', 'uid': uid}, function (response) {
             if(!response.success) {
 
@@ -78,6 +79,60 @@ var profile = (function (d) {
             });
             
         });
+    };
+
+    var _fn_handleUserData = function (uname, uidUnknown) {
+        chrome.extension.sendRequest({method: 'search-user', 'uname': uname}, function (response) {
+
+            if(!response.success) {
+
+                var errJSON = JSON.parse(response.err);
+                console.dir(errJSON);
+
+                if(errJSON.meta && errJSON.meta.error_type == 'APINotAllowedError') {
+                    NOTIFY.notify(errJSON.meta.error_message, {
+                        parent: d.getElementsByTagName('body')[0],
+                        top: 60,
+                        level: 'error'
+                    });
+                }
+                return;
+            }
+
+            if(uidUnknown) {
+                _fn_handleRelationship(response.data[0].id);
+                _fn_handleFeed(response.data[0].id);
+                _fn_handleCounts(response.data[0].id);
+            }
+
+            _fn_fillUserData(response);
+
+        });
+    };
+
+    var _fn_fillCounts = function (counts) {
+        var num_posts = d.getElementById('posts_count');
+        num_posts.innerHTML = counts.media;
+
+        var num_followers = d.getElementById('followers_count');
+        num_followers.innerHTML = counts.followed_by;
+
+        var num_following = d.getElementById('following_count');
+        num_following.innerHTML = counts.follows;
+    };
+
+    var _fn_setup = function (uid, uname) {
+
+        // setting username by default in case the user is private
+        d.getElementById('user_name').innerHTML = uname;
+
+        _fn_handleUserData(uname, !uid);
+
+        if(uid) {
+            _fn_handleRelationship(uid);
+            _fn_handleFeed(uid);
+            _fn_handleCounts(uid);
+        }
 
     };
 
@@ -139,7 +194,7 @@ var profile = (function (d) {
             });
         }
 
-        var userData = response.data;
+        var userData = response.data[0];
 
         // profile picture
         var profile_picture = d.getElementsByClassName('avatar')[0].getElementsByTagName('img')[0];
@@ -159,18 +214,13 @@ var profile = (function (d) {
 
         if(userData.bio) {
             var user_bio = d.getElementById('bio');
-            user_bio.innerHTML = common.linkifyHashtags(userData.bio);
+            user_bio.innerHTML = common.linkifyHashtagsAndMentions(userData.bio);
         }
 
-        // counts
-        var num_posts = d.getElementById('posts_count');
-        num_posts.innerHTML = userData.counts.media;
+        if(userData.counts) {
+            _fn_fillCounts(userData.counts);
+        }
 
-        var num_followers = d.getElementById('followers_count');
-        num_followers.innerHTML = userData.counts.followed_by;
-
-        var num_following = d.getElementById('following_count');
-        num_following.innerHTML = userData.counts.follows;
     };
 
     var _fn_constructImage = function (parent, imgData) {
@@ -274,7 +324,12 @@ document.addEventListener('DOMContentLoaded', function() {
         var uid = queryParams.uid;
         var uname = queryParams.uname;
 
+        console.dir(queryParams);
+
         profile.setup(uid, uname);
+        
+        common.createProfileLinks();
+        common.createHashtagLinks();
 
     });
 });

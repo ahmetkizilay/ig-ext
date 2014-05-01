@@ -186,6 +186,20 @@ var api = (function () {
         _fn_sendHttpRequest(method, url, paramString, onsuccess, onfail);
     };
 
+    _methods.get_users_search = function() {
+        var parameters = arguments[0];
+        var onsuccess = arguments[1];
+        var onfail = arguments[2];
+
+        var method = 'GET';
+        var endpoint = '/users/search';
+        var paramString = _fn_buildParamString(parameters);
+
+        var url = _base_url + endpoint + '?' + paramString;
+
+        _fn_sendHttpRequest(method, url, null, onsuccess, onfail);
+    };
+
     return _methods;
 })();
 
@@ -502,6 +516,27 @@ var app = (function (config) {
         }
     };
 
+    var _fn_searchUser = function (username, callback) {
+        var parameters = {
+            'access_token': _user_data.access_token,
+            'q': username
+        };
+
+        var onsuccess = function(response) {
+            var responseJSON = JSON.parse(response);
+            console.dir(responseJSON.data);
+
+            callback({'success': true, 'data': responseJSON.data });
+        };
+
+        var onfail = function(status, msg) {
+            console.log('searchUser returned error: ', status, msg);
+            callback({'success': false});
+        };
+
+        api['get_users_search'].call(api, parameters, onsuccess, onfail);
+    };
+
     var _fn_setup = function () {
 
         chrome.storage.local.get('user_data', function (res) {
@@ -524,6 +559,7 @@ var app = (function (config) {
         getMedia: _fn_getMedia,
         getPostsWithHashtag: _fn_getPostsWithHashtag,
         getHashtagInfo: _fn_getHashtagInfo,
+        searchUser: _fn_searchUser,
         history: _fn_history,
         setup: _fn_setup
     };
@@ -574,6 +610,10 @@ chrome.extension.onRequest.addListener(function (request, tab, sendRequest) {
 
     if(request.method === 'hashtag-info') {
         app.getHashtagInfo(request.hashtag, sendRequest);
+    }
+
+    if(request.method  === 'search-user') {
+        app.searchUser(request.uname, sendRequest);
     }
 });
 

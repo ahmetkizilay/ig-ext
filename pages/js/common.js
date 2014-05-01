@@ -3,6 +3,15 @@ var common = (function (d) {
         return txt.replace(/(#[\u00C0-\u017Ea-zA-Z0-9\']+)/g, '<a href="#" class="hashtag">$1</a>');
     };
 
+    var _fn_linkifyMentions = function (txt) {
+        return txt.replace(/@([\u00C0-\u017Ea-zA-Z0-9_\']+)/g, '<a href="#" class="link-profile" data-uname="$1">@$1</a>');
+    };
+
+    var _fn_linkifyHashtagsAndMentions = function (txt) {
+        var result = _fn_linkifyHashtags(txt);
+        return _fn_linkifyMentions(result);
+    };
+
     var _fn_createProfileLinks = function () {
         var items = d.getElementsByClassName('link-profile');
 
@@ -10,8 +19,15 @@ var common = (function (d) {
             var item = items[i];
             
             item.addEventListener('click', function () {
-                location.href = '/pages/profile.html?uid=' + this.getAttribute('data-uid') +
-                                                   '&uname=' + this.getAttribute('data-uname');
+                var redirectStr = '/pages/profile.html?';
+
+                if (this.getAttribute('data-uid')) {
+                    redirectStr = redirectStr + 'uid=' + this.getAttribute('data-uid') + '&';
+                }
+                
+                redirectStr = redirectStr + 'uname=' + this.getAttribute('data-uname');
+
+                location.href = redirectStr;
             });
         }
     };
@@ -73,7 +89,6 @@ var common = (function (d) {
                         response += '?nav=true';
                     }
 
-                    console.log(response);
                     location.href = response;
                 }
         };
@@ -91,6 +106,8 @@ var common = (function (d) {
                 action: 'fwd'
             }}, fn_handleResponse);
         });
+
+        console.log('current page', location.href);
     };
 
     return  {
@@ -98,6 +115,8 @@ var common = (function (d) {
         getQueryParams: _fn_getQueryParams,
         setupNavigation: _fn_setupNavigation,
         linkifyHashtags: _fn_linkifyHashtags,
+        linkifyMention: _fn_linkifyMentions,
+        linkifyHashtagsAndMentions: _fn_linkifyHashtagsAndMentions,
         createHashtagLinks: _fn_createHashtagLinks
     };
 

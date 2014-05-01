@@ -58,6 +58,7 @@ var loginPage = (function (d) {
         var img = document.createElement('img');
         img.setAttribute('src', imgData.images.thumbnail.url);
         img.setAttribute('data-pid', imgData.id);
+        console.log('setting data-pid attr', imgData.id);
         img.addEventListener('click', function () {
             var pid = this.getAttribute('data-pid');
             console.log(pid);
