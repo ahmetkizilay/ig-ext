@@ -15,19 +15,32 @@ var common = (function (d) {
     var _fn_createProfileLinks = function () {
         var items = d.getElementsByClassName('link-profile');
 
+        var fn = function () {
+            var redirectStr = '/pages/profile.html?';
+
+            if (this.getAttribute('data-uid')) {
+                redirectStr = redirectStr + 'uid=' + this.getAttribute('data-uid') + '&';
+            }
+            
+            redirectStr = redirectStr + 'uname=' + this.getAttribute('data-uname');
+
+            location.href = redirectStr;
+        };
+
         for(var i = 0; i < items.length; i += 1) {
             var item = items[i];
-            
+            item.addEventListener('click', fn);
+        }
+    };
+
+    var _fn_createLikerLinks = function () {
+        var items = d.getElementsByClassName('link-likers');
+
+        for(var i = 0; i < items.length; i += 1) {
+            var item = items[i];
+
             item.addEventListener('click', function () {
-                var redirectStr = '/pages/profile.html?';
-
-                if (this.getAttribute('data-uid')) {
-                    redirectStr = redirectStr + 'uid=' + this.getAttribute('data-uid') + '&';
-                }
-                
-                redirectStr = redirectStr + 'uname=' + this.getAttribute('data-uname');
-
-                location.href = redirectStr;
+                location.href = '/pages/user-list.html?type=like&pid=' + this.getAttribute('data-pid');
             });
         }
     };
@@ -109,6 +122,7 @@ var common = (function (d) {
 
     return  {
         createProfileLinks: _fn_createProfileLinks,
+        createLikerLinks: _fn_createLikerLinks,
         getQueryParams: _fn_getQueryParams,
         setupNavigation: _fn_setupNavigation,
         linkifyHashtags: _fn_linkifyHashtags,

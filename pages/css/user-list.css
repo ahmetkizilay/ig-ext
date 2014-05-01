@@ -1,0 +1,62 @@
+.header {
+    margin-top: 10px;
+    margin-left: 20px;
+    line-height: 18px;
+    vertical-align: middle;
+    font-size: 18px;
+    height: 100px;
+}
+
+.header>a {
+    margin-right: 10px;
+    float: left;
+}
+
+.header img {
+    width: 85px;
+    height: 85px;
+    border: solid 2px #cecece;
+}
+
+.header>div {
+    word-wrap: break-word;
+    padding-top: 18px;
+}
+
+.users {
+    margin-top: 20px;
+    margin-left: 20px;
+}
+
+.user {
+    float: left;
+    width: 450px;
+    height: 60px;
+    margin-bottom: 10px;
+    line-height: 50px;
+}
+
+.user:hover {
+    background-color: #cecece;
+}
+
+.user:after {
+    content: '\a';
+}
+
+.user img {
+    width: 50px;
+    height: 50px;
+    border: solid 2px #cecece;
+}
+
+.user a {
+    vertical-align: middle;
+    text-decoration: none;
+    font-size: 18px;
+}
+
+.user a:last-of-type {
+    margin-left: 5px;
+    margin-right: 5px;
+}

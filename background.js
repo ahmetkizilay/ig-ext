@@ -126,6 +126,21 @@ var api = (function () {
         _fn_sendHttpRequest(method, url, paramString, onsuccess, onfail);
     };
 
+    _methods.get_media_mediaid_likes = function() {
+        var media_id = arguments[0];
+        var parameters = arguments[1];
+        var onsuccess = arguments[2];
+        var onfail = arguments[3];
+
+        var method = 'GET';
+        var endpoint = '/media/' + media_id + '/likes';
+        var paramString = _fn_buildParamString(parameters);
+
+        var url = _base_url + endpoint + '?' + paramString;
+
+        _fn_sendHttpRequest(method, url, null, onsuccess, onfail);
+    };
+
     _methods.get_users_userid_relationship = function() {
         var user_id = arguments[0];
         var parameters = arguments[1];
@@ -537,6 +552,26 @@ var app = (function (config) {
         api['get_users_search'].call(api, parameters, onsuccess, onfail);
     };
 
+    var _fn_getLikes = function (media_id, callback) {
+        var parameters = {
+            'access_token': _user_data.access_token
+        };
+
+        var onsuccess = function(response) {
+            var responseJSON = JSON.parse(response);
+            console.dir(responseJSON.data);
+
+            callback({'success': true, 'data': responseJSON.data });
+        };
+
+        var onfail = function(status, msg) {
+            console.log('getLikes returned error: ', status, msg);
+            callback({'success': false});
+        };
+
+        api['get_media_mediaid_likes'].call(api, media_id, parameters, onsuccess, onfail);
+    };
+
     var _fn_setup = function () {
 
         chrome.storage.local.get('user_data', function (res) {
@@ -560,6 +595,7 @@ var app = (function (config) {
         getPostsWithHashtag: _fn_getPostsWithHashtag,
         getHashtagInfo: _fn_getHashtagInfo,
         searchUser: _fn_searchUser,
+        getLikes: _fn_getLikes,
         history: _fn_history,
         setup: _fn_setup
     };
@@ -614,6 +650,10 @@ chrome.extension.onRequest.addListener(function (request, tab, sendRequest) {
 
     if(request.method  === 'search-user') {
         app.searchUser(request.uname, sendRequest);
+    }
+
+    if(request.method === 'get-likes') {
+        app.getLikes(request.pid, sendRequest);
     }
 });
 

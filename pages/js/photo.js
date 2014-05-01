@@ -26,7 +26,7 @@ var photo = (function (d) {
         parent.appendChild(divComment);
     };
 
-    var _fn_createLikesInnerHTML = function(likes) {
+    var _fn_createLikesInnerHTML = function(likes, pid) {
         var likeCount = likes.count;
         var givenCount = likes.data.length;
 
@@ -48,7 +48,7 @@ var photo = (function (d) {
 
                 strLikes = strLikes.slice(0, -2);
 
-                strLikes += ' and <a href=\'#\'><label>' + (likeCount - givenCount) + ' others</label></a> like this photo.';
+                strLikes += ' and <a href=\'#\'><label class="link-likers" data-pid="' + pid + '">' + (likeCount - givenCount) + ' others</label></a> like this photo.';
             }
             else {
                 for(i = 0; i < (givenCount - 1); i += 1) {
@@ -121,8 +121,9 @@ var photo = (function (d) {
 
         // creating likes
         var spanLikes = d.getElementById('strLikes');
-        spanLikes.innerHTML = _fn_createLikesInnerHTML(photoData.likes);
-
+        spanLikes.innerHTML = _fn_createLikesInnerHTML(photoData.likes, photoData.id);
+        common.createLikerLinks();
+        
         // adding the caption
         var divComments = d.getElementsByClassName('comments')[0];
         if(photoData.caption) {
