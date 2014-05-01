@@ -1,6 +1,6 @@
 var common = (function (d) {
     var _fn_linkifyHashtags = function (txt) {
-        return txt.replace(/(#[\u00C0-\u017Ea-zA-Z0-9\']+)/g, '<a href="#" class="hashtag">$1</a>');
+        return txt.replace(/(#[\u00C0-\u017Ea-zA-Z0-9_\']+)/g, '<a href="#" class="hashtag">$1</a>');
     };
 
     var _fn_linkifyMentions = function (txt) {
