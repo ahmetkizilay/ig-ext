@@ -164,7 +164,7 @@ var photo = (function (d) {
     };
 
     var _fn_likePost = function(pid, img) {
-        console.log('about to like this post');
+
         chrome.extension.sendRequest({'method': 'like', 'pid': pid}, function (response) {
             console.log('like result', response.success);
             if(response.success) {
@@ -175,10 +175,11 @@ var photo = (function (d) {
                 });
             }
         });
+
     };
 
     var _fn_unlikePost = function(pid, img) {
-        console.log('about to unlike this post');
+
         chrome.extension.sendRequest({'method': 'unlike', 'pid': pid}, function (response) {
             console.log('unlike result', response.success);
             if(response.success) {
@@ -189,6 +190,7 @@ var photo = (function (d) {
                 });
             }
         });
+
     };
 
     return {
@@ -215,7 +217,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
         var queryParams = common.getQueryParams(location.search);
         var pid = queryParams.pid;
-        console.log('this is the pid', pid);
 
         common.setupNavigation();
 
@@ -227,6 +228,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             photo.setup(response.data);
+
             common.createProfileLinks();
             common.createHashtagLinks();
         });

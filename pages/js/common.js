@@ -94,20 +94,17 @@ var common = (function (d) {
         };
 
         btnBack.addEventListener('click', function () {
-            console.log('back clicked');
             chrome.extension.sendRequest({method: 'history', params: {
                 action: 'back'
             }}, fn_handleResponse);
         });
 
         btnFwd.addEventListener('click', function () {
-            console.log('fwd clicked');
             chrome.extension.sendRequest({method: 'history', params: {
                 action: 'fwd'
             }}, fn_handleResponse);
         });
 
-        console.log('current page', location.href);
     };
 
     return  {

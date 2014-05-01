@@ -59,7 +59,6 @@ var hashtags = (function (d) {
         img.setAttribute('data-pid', post.id);
         img.addEventListener('click', function () {
             var pid = this.getAttribute('data-pid');
-            console.log(pid);
             location.href = '/pages/photo.html?pid=' + pid;
         });
         aImage.appendChild(img);
@@ -181,9 +180,7 @@ document.addEventListener('DOMContentLoaded', function() {
         imgProfile.src = user_data.profile_picture;
 
         var queryParams = common.getQueryParams(location.search);
-        console.dir(queryParams);
         var hashtag = queryParams.hashtag;
-
 
         hashtags.setup(hashtag);
 

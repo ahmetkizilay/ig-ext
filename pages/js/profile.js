@@ -81,6 +81,22 @@ var profile = (function (d) {
         });
     };
 
+    var _fn_handleNonExistentProfile = function () {
+        var lblPrivate = d.createElement('label');
+        lblPrivate.className = 'private';
+        lblPrivate.innerHTML = 'It looks like this user does not exist!';
+
+        var container = d.getElementsByClassName('posts')[0];
+        container.className += ' center-text';
+        container.appendChild(lblPrivate);
+
+        var avatar = d.getElementById('avatar');
+        avatar.src = 'img/ig-black.jpg';
+
+        var btnFollow = d.getElementById('btnFollow');
+        btnFollow.style.display = 'none';
+    };
+
     var _fn_handleUserData = function (uname, uidUnknown) {
         chrome.extension.sendRequest({method: 'search-user', 'uname': uname}, function (response) {
 
@@ -96,6 +112,19 @@ var profile = (function (d) {
                         level: 'error'
                     });
                 }
+                return;
+            }
+
+            if(response.data.length === 0) {
+
+                NOTIFY.notify('user does not exist!', {
+                    parent: d.getElementsByTagName('body')[0],
+                    top: 60,
+                    level: 'error'
+                });
+
+                _fn_handleNonExistentProfile();
+
                 return;
             }
 
@@ -221,6 +250,9 @@ var profile = (function (d) {
             _fn_fillCounts(userData.counts);
         }
 
+        common.createProfileLinks();
+        common.createHashtagLinks();
+
     };
 
     var _fn_constructImage = function (parent, imgData) {
@@ -327,9 +359,6 @@ document.addEventListener('DOMContentLoaded', function() {
         console.dir(queryParams);
 
         profile.setup(uid, uname);
-        
-        common.createProfileLinks();
-        common.createHashtagLinks();
 
     });
 });
