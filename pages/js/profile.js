@@ -159,7 +159,7 @@ var profile = (function (d) {
 
         if(userData.bio) {
             var user_bio = d.getElementById('bio');
-            user_bio.innerHTML = userData.bio;
+            user_bio.innerHTML = common.linkifyHashtags(userData.bio);
         }
 
         // counts

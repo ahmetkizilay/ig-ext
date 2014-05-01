@@ -20,7 +20,7 @@ var photo = (function (d) {
         divComment.appendChild(aCommenter);
 
         var spanComment = d.createElement('span');
-        spanComment.innerHTML = comment.text;
+        spanComment.innerHTML = common.linkifyHashtags(comment.text);
         divComment.appendChild(spanComment);
 
         parent.appendChild(divComment);

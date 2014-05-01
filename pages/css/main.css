@@ -10,6 +10,10 @@ a {
     text-decoration: none;
 }
 
+a.hashtag {
+    font-weight: normal;
+}
+
 .starter-template {
     padding: 40px 15px;
     text-align: center;

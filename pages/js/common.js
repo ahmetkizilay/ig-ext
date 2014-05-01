@@ -1,4 +1,8 @@
 var common = (function (d) {
+    var _fn_linkifyHashtags = function (txt) {
+        return txt.replace(/(#[\u00C0-\u017Ea-zA-Z0-9\']+)/g, '<a href="#" class="hashtag">$1</a>');
+    };
+
     var _fn_createProfileLinks = function () {
         var items = d.getElementsByClassName('link-profile');
 
@@ -9,7 +13,7 @@ var common = (function (d) {
                 location.href = '/pages/profile.html?uid=' + this.getAttribute('data-uid') +
                                                    '&uname=' + this.getAttribute('data-uname');
             });
-        };
+        }
     };
 
     var _fn_getQueryParams = function(queryString) {
@@ -80,7 +84,8 @@ var common = (function (d) {
     return  {
         createProfileLinks: _fn_createProfileLinks,
         getQueryParams: _fn_getQueryParams,
-        setupNavigation: _fn_setupNavigation
+        setupNavigation: _fn_setupNavigation,
+        linkifyHashtags: _fn_linkifyHashtags
     };
 
 })(document);
