@@ -64,6 +64,14 @@ var loginPage = (function (d) {
         });
         aImage.appendChild(img);
         middleDiv.appendChild(aImage);
+
+        if (imgData.type === 'video') {
+            var imgVidIndicator = d.createElement('img');
+            imgVidIndicator.src = 'img/v.png';
+            imgVidIndicator.className = 'video-img';
+
+            middleDiv.appendChild(imgVidIndicator);
+        }
         // end middle div
 
         // start bottom div

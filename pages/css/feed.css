@@ -25,6 +25,16 @@
     height: 125px;
 }
 
+img.video-img {
+    position: relative;
+    vertical-align: top;
+    right: 20px;
+    top: 10px;
+    width: 16px;
+    height: 16px;
+    z-index: 300;
+}
+
 .bottom {
     padding-left: 2px;
     opacity: 0;
