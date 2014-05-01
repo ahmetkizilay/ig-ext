@@ -16,6 +16,18 @@ var common = (function (d) {
         }
     };
 
+    var _fn_createHashtagLinks = function () {
+        var items = d.getElementsByClassName('hashtag');
+
+        for(var i = 0; i < items.length; i += 1) {
+            var item = items[i];
+
+            item.addEventListener('click', function () {
+                location.href = '/pages/hashtags.html?hashtag=' + this.innerHTML.substring(1);
+            });
+        }
+    };
+
     var _fn_getQueryParams = function(queryString) {
         var qs = queryString.split('+').join(' '),
             params = {},
@@ -85,7 +97,8 @@ var common = (function (d) {
         createProfileLinks: _fn_createProfileLinks,
         getQueryParams: _fn_getQueryParams,
         setupNavigation: _fn_setupNavigation,
-        linkifyHashtags: _fn_linkifyHashtags
+        linkifyHashtags: _fn_linkifyHashtags,
+        createHashtagLinks: _fn_createHashtagLinks
     };
 
 })(document);

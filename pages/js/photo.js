@@ -228,6 +228,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             photo.setup(response.data);
             common.createProfileLinks();
+            common.createHashtagLinks();
         });
     });
 });

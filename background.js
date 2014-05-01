@@ -156,6 +156,36 @@ var api = (function () {
         _fn_sendHttpRequest(method, url, paramString, onsuccess, onfail);
     };
 
+    _methods.get_tags_tagname_media_recent = function() {
+        var tag_name = arguments[0];
+        var parameters = arguments[1];
+        var onsuccess = arguments[2];
+        var onfail = arguments[3];
+
+        var method = 'GET';
+        var endpoint = '/tags/' + tag_name + '/media/recent';
+        var paramString = _fn_buildParamString(parameters);
+
+        var url = _base_url + endpoint + '?' + paramString;
+
+        _fn_sendHttpRequest(method, url, paramString, onsuccess, onfail);
+    };
+
+    _methods.get_tags_tagname = function() {
+        var tag_name = arguments[0];
+        var parameters = arguments[1];
+        var onsuccess = arguments[2];
+        var onfail = arguments[3];
+
+        var method = 'GET';
+        var endpoint = '/tags/' + tag_name;
+        var paramString = _fn_buildParamString(parameters);
+
+        var url = _base_url + endpoint + '?' + paramString;
+
+        _fn_sendHttpRequest(method, url, paramString, onsuccess, onfail);
+    };
+
     return _methods;
 })();
 
@@ -301,6 +331,46 @@ var app = (function (config) {
         };
 
         api['get_users_userid_media_recent'].call(api, uid, parameters, onsuccess, onfail);
+    };
+
+    var _fn_getPostsWithHashtag = function (hashtag, callback) {
+        var parameters = {
+            'access_token': _user_data.access_token
+        };
+
+        var onsuccess = function(response) {
+            var responseJSON = JSON.parse(response);
+            console.dir(responseJSON.data);
+
+            callback({'success': true, 'data': responseJSON.data });
+        };
+
+        var onfail = function(status, msg) {
+            console.log('getPostsWithHashtag response: ', status, msg);
+            callback({'success': false, 'err': msg});
+        };
+
+        api['get_tags_tagname_media_recent'].call(api, hashtag, parameters, onsuccess, onfail);
+    };
+
+    var _fn_getHashtagInfo = function (hashtag, callback) {
+        var parameters = {
+            'access_token': _user_data.access_token
+        };
+
+        var onsuccess = function(response) {
+            var responseJSON = JSON.parse(response);
+            console.dir(responseJSON.data);
+
+            callback({'success': true, 'data': responseJSON.data });
+        };
+
+        var onfail = function(status, msg) {
+            console.log('getHashtagInfo response: ', status, msg);
+            callback({'success': false, 'err': msg});
+        };
+
+        api['get_tags_tagname'].call(api, hashtag, parameters, onsuccess, onfail);
     };
 
     var _fn_getUser = function (uid, callback) {
@@ -452,6 +522,8 @@ var app = (function (config) {
         getUserFeed: _fn_getUserFeed,
         getCachedPhotoData: _fn_getCachedPhotoData,
         getMedia: _fn_getMedia,
+        getPostsWithHashtag: _fn_getPostsWithHashtag,
+        getHashtagInfo: _fn_getHashtagInfo,
         history: _fn_history,
         setup: _fn_setup
     };
@@ -494,6 +566,14 @@ chrome.extension.onRequest.addListener(function (request, tab, sendRequest) {
 
     if(request.method === 'relationship') {
         app.getRelationship(request.uid, sendRequest);
+    }
+
+    if(request.method === 'hashtags') {
+        app.getPostsWithHashtag(request.hashtag, sendRequest);
+    }
+
+    if(request.method === 'hashtag-info') {
+        app.getHashtagInfo(request.hashtag, sendRequest);
     }
 });
 
