@@ -314,9 +314,6 @@ var profile = (function (d) {
         lblCommentCount.innerHTML = imgData.comments.count;
         bottomDiv.appendChild(lblCommentCount);
 
-        // var lblDate = document.createElement('label');
-        // lblDate.innerHTML = _fn_convertTimestamp(imgData.created_time);
-        // bottomDiv.appendChild(lblDate);
         // end bottom div
 
         postDiv.appendChild(topDiv);

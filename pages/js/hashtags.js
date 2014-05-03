@@ -1,37 +1,5 @@
 var hashtags = (function (d) {
-    var _fn_convertTimestamp = function (timestamp) {
-        var yearInMS = 31557600000;
-        var weekInMS = 604800000;
-        var dayInMS = 86400000;
-        var hourInMS = 3600000;
-        var minInMS = 60000;
-        var secondInMS = 1000;
-
-        var span = new Date().getTime() - new Date(timestamp * 1000).getTime();
-
-        if(span > yearInMS) {
-            return Math.floor(span / yearInMS) + 'y';
-        }
-
-        if(span > weekInMS) {
-            return Math.floor(span / weekInMS) + 'w';
-        }
-
-        if(span > dayInMS) {
-            return Math.floor(span / dayInMS) + 'd';
-        }
-
-        if(span > hourInMS) {
-            return Math.floor(span / hourInMS) + 'h';
-        }
-
-        if(span > minInMS) {
-            return Math.floor(span / minInMS) + 'm';
-        }
-
-        return Math.floor(span / secondInMS) + 's';
-    };
-
+    
     var _fn_constructImage = function (parent, post) {
         var postDiv = document.createElement('div');
         postDiv.className = 'post';
@@ -94,7 +62,7 @@ var hashtags = (function (d) {
         bottomDiv.appendChild(lblCommentCount);
 
         var lblDate = document.createElement('label');
-        lblDate.innerHTML = _fn_convertTimestamp(post.created_time);
+        lblDate.innerHTML = common.convertTimestamp(post.created_time);
         bottomDiv.appendChild(lblDate);
         // end bottom div
 

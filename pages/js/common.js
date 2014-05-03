@@ -134,6 +134,39 @@ var common = (function (d) {
 
     };
 
+    var _fn_convertTimestamp = function (timestamp) {
+        var yearInMS = 31557600000;
+        var weekInMS = 604800000;
+        var dayInMS = 86400000;
+        var hourInMS = 3600000;
+        var minInMS = 60000;
+        var secondInMS = 1000;
+
+        var span = new Date().getTime() - new Date(timestamp * 1000).getTime();
+
+        if(span > yearInMS) {
+            return Math.floor(span / yearInMS) + 'y';
+        }
+
+        if(span > weekInMS) {
+            return Math.floor(span / weekInMS) + 'w';
+        }
+
+        if(span > dayInMS) {
+            return Math.floor(span / dayInMS) + 'd';
+        }
+
+        if(span > hourInMS) {
+            return Math.floor(span / hourInMS) + 'h';
+        }
+
+        if(span > minInMS) {
+            return Math.floor(span / minInMS) + 'm';
+        }
+
+        return Math.floor(span / secondInMS) + 's';
+    };
+
     return  {
         createProfileLinks: _fn_createProfileLinks,
         createLikerLinks: _fn_createLikerLinks,
@@ -143,7 +176,8 @@ var common = (function (d) {
         linkifyHashtags: _fn_linkifyHashtags,
         linkifyMention: _fn_linkifyMentions,
         linkifyHashtagsAndMentions: _fn_linkifyHashtagsAndMentions,
-        createHashtagLinks: _fn_createHashtagLinks
+        createHashtagLinks: _fn_createHashtagLinks,
+        convertTimestamp: _fn_convertTimestamp
     };
 
 })(document);

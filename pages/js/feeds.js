@@ -1,36 +1,4 @@
 var loginPage = (function (d) {
-    var _fn_convertTimestamp = function (timestamp) {
-        var yearInMS = 31557600000;
-        var weekInMS = 604800000;
-        var dayInMS = 86400000;
-        var hourInMS = 3600000;
-        var minInMS = 60000;
-        var secondInMS = 1000;
-
-        var span = new Date().getTime() - new Date(timestamp * 1000).getTime();
-
-        if(span > yearInMS) {
-            return Math.floor(span / yearInMS) + 'y';
-        }
-
-        if(span > weekInMS) {
-            return Math.floor(span / weekInMS) + 'w';
-        }
-
-        if(span > dayInMS) {
-            return Math.floor(span / dayInMS) + 'd';
-        }
-
-        if(span > hourInMS) {
-            return Math.floor(span / hourInMS) + 'h';
-        }
-
-        if(span > minInMS) {
-            return Math.floor(span / minInMS) + 'm';
-        }
-
-        return Math.floor(span / secondInMS) + 's';
-    };
 
     // http://jsfiddle.net/g9hAx/2/
     var _fn_constructImage = function (parent, imgData) {
@@ -95,7 +63,7 @@ var loginPage = (function (d) {
         bottomDiv.appendChild(lblCommentCount);
 
         var lblDate = document.createElement('label');
-        lblDate.innerHTML = _fn_convertTimestamp(imgData.created_time);
+        lblDate.innerHTML = common.convertTimestamp(imgData.created_time);
         bottomDiv.appendChild(lblDate);
         // end bottom div
 
