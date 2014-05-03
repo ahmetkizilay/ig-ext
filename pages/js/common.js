@@ -70,6 +70,20 @@ var common = (function (d) {
         return params;
     };
 
+    var _fn_setupHeader = function (user_data) {
+        
+        var lblProfile = d.getElementById("lblProfile");
+        lblProfile.innerHTML = user_data.full_name;
+        lblProfile.setAttribute('data-uid', user_data.user_id);
+        lblProfile.setAttribute('data-uname', user_data.username);
+        
+        var imgProfile = d.getElementById('imgProfile');
+        imgProfile.src = user_data.profile_picture;
+        imgProfile.parentNode.setAttribute('data-uid', user_data.user_id);
+        imgProfile.parentNode.setAttribute('data-uname', user_data.username);
+
+    };
+
     var _fn_setupNavigation = function () {
 
         var divNav = d.createElement('div');
@@ -125,6 +139,7 @@ var common = (function (d) {
         createLikerLinks: _fn_createLikerLinks,
         getQueryParams: _fn_getQueryParams,
         setupNavigation: _fn_setupNavigation,
+        setupHeader: _fn_setupHeader,
         linkifyHashtags: _fn_linkifyHashtags,
         linkifyMention: _fn_linkifyMentions,
         linkifyHashtagsAndMentions: _fn_linkifyHashtagsAndMentions,

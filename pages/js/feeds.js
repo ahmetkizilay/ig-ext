@@ -132,13 +132,7 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-
-        var lblProfile = document.getElementById("lblProfile");
-        lblProfile.innerHTML = user_data.full_name;
-
-        var imgProfile = document.getElementById('imgProfile');
-        imgProfile.src = user_data.profile_picture;
-
+        common.setupHeader(user_data);
         common.setupNavigation();
 
         // loading user feed

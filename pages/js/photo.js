@@ -210,16 +210,13 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        var lblProfile = document.getElementById("lblProfile");
-        lblProfile.innerHTML = user_data.full_name;
+        common.setupHeader(user_data);
 
-        var imgProfile = document.getElementById('imgProfile');
-        imgProfile.src = user_data.profile_picture;
+        common.setupNavigation();
 
         var queryParams = common.getQueryParams(location.search);
         var pid = queryParams.pid;
 
-        common.setupNavigation();
 
         chrome.extension.sendRequest({method: 'photo', 'pid': pid}, function (response) {
 

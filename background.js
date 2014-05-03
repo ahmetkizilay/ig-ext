@@ -272,12 +272,14 @@ var app = (function (config) {
         var url = config.access_token_link + '?code=' + code;
         var onsuccess = function (access_data) {
             var accessJSON = JSON.parse(access_data);
+            console.dir(accessJSON);
 
             _user_data.access_token = accessJSON.access_token;
             _user_data.username = accessJSON.user.username;
             _user_data.full_name = accessJSON.user.full_name;
             _user_data.profile_picture = accessJSON.user.profile_picture;
-
+            _user_data.user_id = accessJSON.user.id;
+            
             chrome.storage.local.set({'user_data': _user_data}, function () {
                 console.log('stored user data in storage');
 

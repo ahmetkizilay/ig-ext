@@ -139,12 +139,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     
         common.setupNavigation();
-
-        var lblProfile = document.getElementById("lblProfile");
-        lblProfile.innerHTML = user_data.full_name;
-
-        var imgProfile = document.getElementById('imgProfile');
-        imgProfile.src = user_data.profile_picture;
+        common.setupHeader(user_data);
 
         var queryParams = common.getQueryParams(location.search);
         user_list.setup(queryParams);

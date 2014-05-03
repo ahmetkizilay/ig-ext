@@ -27,6 +27,10 @@ label.profile {
     color: #ddd;
 }
 
+label.profile:hover {
+    cursor: pointer;
+}
+
 img.profile {
     max-height: 95%;
     margin-top: -2px;
