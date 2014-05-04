@@ -3,7 +3,8 @@
     height: 34px;
     text-align: center;
     margin-top: 5px;
-    border-bottom: solid 1px #c0d0e0
+    border-bottom: solid 1px #c0d0e0;
+    display: block;
 }
 
 .description label{
@@ -13,7 +14,6 @@
 }
 
 .feed {
-    margin-top: 10px;
     padding-top: 15px;
 }
 
@@ -25,28 +25,40 @@
 
 .top {
    opacity: 0;
+   text-align: center;
 }
 
 .middle {
+    width: 100%;
     text-align: center;
 }
 
-.middle img {
-    margin-top: 2px;
-    border: solid 2px #aaa;
-    vertical-align: middle;
-    width: 125px;
-    height: 125px;
+.middle a {
+    position:relative;
+    display:block;
+    
+    width:125px;
+    height:125px;
+    
+    margin-left: 20px;
+
+}
+
+.middle img.media {
+    width:125px;
+    height:125px;
+}
+
+.middle span {
+    position:absolute;
+    left:8px;
+    top:8px;
 }
 
 img.video-img {
-    position: relative;
-    vertical-align: top;
-    right: 20px;
-    top: 10px;
-    width: 16px;
-    height: 16px;
-    z-index: 300;
+    width:16px;
+    height:16px;
+    opacity: 0.4;
 }
 
 .bottom {

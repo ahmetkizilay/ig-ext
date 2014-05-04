@@ -1,6 +1,7 @@
 var likesPage = (function (d) {
 
     // http://jsfiddle.net/g9hAx/2/
+    // http://jsfiddle.net/g9hAx/2/
     var _fn_constructImage = function (parent, imgData) {
         var postDiv = document.createElement('div');
         postDiv.className = 'post';
@@ -25,21 +26,26 @@ var likesPage = (function (d) {
         aImage.setAttribute('href', '#');
         var img = document.createElement('img');
         img.setAttribute('src', imgData.images.thumbnail.url);
+        img.className += " media";
         img.setAttribute('data-pid', imgData.id);
         img.addEventListener('click', function () {
             var pid = this.getAttribute('data-pid');
             location.href = '/pages/photo.html?pid=' + pid;
         });
         aImage.appendChild(img);
-        middleDiv.appendChild(aImage);
 
         if (imgData.type === 'video') {
+            var spanVidIndicator = d.createElement('span');
             var imgVidIndicator = d.createElement('img');
             imgVidIndicator.src = 'img/v.png';
             imgVidIndicator.className = 'video-img';
 
-            middleDiv.appendChild(imgVidIndicator);
+            spanVidIndicator.appendChild(imgVidIndicator);
+            aImage.appendChild(spanVidIndicator);
         }
+
+        middleDiv.appendChild(aImage);
+
         // end middle div
 
         // start bottom div
@@ -84,6 +90,7 @@ var likesPage = (function (d) {
         parent.appendChild(postDiv);
 
     };
+
 
     return {
         constructImage: _fn_constructImage

@@ -287,21 +287,25 @@ var profile = (function (d) {
         var img = document.createElement('img');
         img.setAttribute('src', imgData.images.thumbnail.url);
         img.setAttribute('data-pid', imgData.id);
+        img.className += " media";
         img.addEventListener('click', function () {
             var pid = this.getAttribute('data-pid');
             console.log(pid);
             location.href = '/pages/photo.html?pid=' + pid;
         });
         aImage.appendChild(img);
-        middleDiv.appendChild(aImage);
 
-        if(imgData.type === 'video') {
+        if (imgData.type === 'video') {
+            var spanVidIndicator = d.createElement('span');
             var imgVidIndicator = d.createElement('img');
             imgVidIndicator.src = 'img/v.png';
             imgVidIndicator.className = 'video-img';
 
-            middleDiv.appendChild(imgVidIndicator);
+            spanVidIndicator.appendChild(imgVidIndicator);
+            aImage.appendChild(spanVidIndicator);
         }
+
+        middleDiv.appendChild(aImage);
         // end middle div
 
         // start bottom div

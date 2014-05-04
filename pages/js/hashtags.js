@@ -25,20 +25,23 @@ var hashtags = (function (d) {
         var img = document.createElement('img');
         img.setAttribute('src', post.images.thumbnail.url);
         img.setAttribute('data-pid', post.id);
+        img.className += " media";
         img.addEventListener('click', function () {
             var pid = this.getAttribute('data-pid');
             location.href = '/pages/photo.html?pid=' + pid;
         });
         aImage.appendChild(img);
-        middleDiv.appendChild(aImage);
 
-        if(post.type === 'video') {
+        if (post.type === 'video') {
+            var spanVidIndicator = d.createElement('span');
             var imgVidIndicator = d.createElement('img');
             imgVidIndicator.src = 'img/v.png';
             imgVidIndicator.className = 'video-img';
 
-            middleDiv.appendChild(imgVidIndicator);
+            spanVidIndicator.appendChild(imgVidIndicator);
+            aImage.appendChild(spanVidIndicator);
         }
+        middleDiv.appendChild(aImage);
         // end middle div
 
         // start bottom div

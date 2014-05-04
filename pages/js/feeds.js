@@ -32,15 +32,19 @@ var loginPage = (function (d) {
             location.href = '/pages/photo.html?pid=' + pid;
         });
         aImage.appendChild(img);
-        middleDiv.appendChild(aImage);
 
         if (imgData.type === 'video') {
+            var spanVidIndicator = d.createElement('span');
             var imgVidIndicator = d.createElement('img');
             imgVidIndicator.src = 'img/v.png';
             imgVidIndicator.className = 'video-img';
 
-            middleDiv.appendChild(imgVidIndicator);
+            spanVidIndicator.appendChild(imgVidIndicator);
+            aImage.appendChild(spanVidIndicator);
         }
+
+        middleDiv.appendChild(aImage);
+
         // end middle div
 
         // start bottom div
