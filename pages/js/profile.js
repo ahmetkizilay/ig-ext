@@ -9,7 +9,7 @@ var profile = (function (d) {
         return result;
     };
 
-    var _fn_handleCounts = function (uid) {
+    var _fn_handleCounts = function (uid, uname) {
         chrome.extension.sendRequest({method: 'user', 'uid': uid}, function (response) {
 
             if(!response.success) {
@@ -28,7 +28,7 @@ var profile = (function (d) {
                 return;
             }
 
-            _fn_fillCounts(response.data.counts);
+            _fn_fillCounts(response.data.counts, uid, uname);
 
         });
     };
@@ -131,7 +131,7 @@ var profile = (function (d) {
             if(uidUnknown) {
                 _fn_handleRelationship(response.data[0].id);
                 _fn_handleFeed(response.data[0].id);
-                _fn_handleCounts(response.data[0].id);
+                _fn_handleCounts(response.data[0].id, response.data[0].username);
             }
 
             _fn_fillUserData(response);
@@ -139,15 +139,25 @@ var profile = (function (d) {
         });
     };
 
-    var _fn_fillCounts = function (counts) {
+    var _fn_fillCounts = function (counts, uid, uname) {
         var num_posts = d.getElementById('posts_count');
         num_posts.innerHTML = counts.media;
 
         var num_followers = d.getElementById('followers_count');
         num_followers.innerHTML = counts.followed_by;
+        num_followers.setAttribute('data-uid', uid);
+        num_followers.setAttribute('data-uname', uname);
+        num_followers.className += " followed-by";
 
         var num_following = d.getElementById('following_count');
         num_following.innerHTML = counts.follows;
+        num_following.setAttribute('data-uid', uid);
+        num_following.setAttribute('data-uname', uname);
+        num_following.className += " follows";
+
+        common.createFollowedByLinks();
+        common.createFollowsLinks();
+
     };
 
     var _fn_setup = function (uid, uname) {
@@ -160,7 +170,7 @@ var profile = (function (d) {
         if(uid) {
             _fn_handleRelationship(uid);
             _fn_handleFeed(uid);
-            _fn_handleCounts(uid);
+            _fn_handleCounts(uid, uname);
         }
 
     };
@@ -247,7 +257,7 @@ var profile = (function (d) {
         }
 
         if(userData.counts) {
-            _fn_fillCounts(userData.counts);
+            _fn_fillCounts(userData.counts, userData.id, userData.username);
         }
 
         common.createProfileLinks();

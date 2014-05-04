@@ -215,6 +215,36 @@ var api = (function () {
         _fn_sendHttpRequest(method, url, null, onsuccess, onfail);
     };
 
+    _methods.get_users_userid_followedby = function() {
+        var user_id = arguments[0];
+        var parameters = arguments[1];
+        var onsuccess = arguments[2];
+        var onfail = arguments[3];
+
+        var method = 'GET';
+        var endpoint = '/users/' + user_id + '/followed-by';
+        var paramString = _fn_buildParamString(parameters);
+
+        var url = _base_url + endpoint + '?' + paramString;
+
+        _fn_sendHttpRequest(method, url, null, onsuccess, onfail);
+    };
+
+    _methods.get_users_userid_follows = function() {
+        var user_id = arguments[0];
+        var parameters = arguments[1];
+        var onsuccess = arguments[2];
+        var onfail = arguments[3];
+
+        var method = 'GET';
+        var endpoint = '/users/' + user_id + '/follows';
+        var paramString = _fn_buildParamString(parameters);
+
+        var url = _base_url + endpoint + '?' + paramString;
+
+        _fn_sendHttpRequest(method, url, null, onsuccess, onfail);
+    };
+
     return _methods;
 })();
 
@@ -554,6 +584,46 @@ var app = (function (config) {
         api['get_users_search'].call(api, parameters, onsuccess, onfail);
     };
 
+    var _fn_getFollowedBy = function (user_id, callback) {
+        var parameters = {
+            'access_token': _user_data.access_token
+        };
+
+        var onsuccess = function(response) {
+            var responseJSON = JSON.parse(response);
+            console.dir(responseJSON.data);
+
+            callback({'success': true, 'data': responseJSON.data });
+        };
+
+        var onfail = function(status, msg) {
+            console.log('getLikes returned error: ', status, msg);
+            callback({'success': false});
+        };
+
+        api['get_users_userid_followedby'].call(api, user_id, parameters, onsuccess, onfail);        
+    };
+
+    var _fn_getFollows = function (user_id, callback) {
+        var parameters = {
+            'access_token': _user_data.access_token
+        };
+
+        var onsuccess = function(response) {
+            var responseJSON = JSON.parse(response);
+            console.dir(responseJSON.data);
+
+            callback({'success': true, 'data': responseJSON.data });
+        };
+
+        var onfail = function(status, msg) {
+            console.log('getFollows returned error: ', status, msg);
+            callback({'success': false});
+        };
+
+        api['get_users_userid_follows'].call(api, user_id, parameters, onsuccess, onfail);        
+    };
+
     var _fn_getLikes = function (media_id, callback) {
         var parameters = {
             'access_token': _user_data.access_token
@@ -598,6 +668,8 @@ var app = (function (config) {
         getHashtagInfo: _fn_getHashtagInfo,
         searchUser: _fn_searchUser,
         getLikes: _fn_getLikes,
+        getFollowedBy: _fn_getFollowedBy,
+        getFollows: _fn_getFollows,
         history: _fn_history,
         setup: _fn_setup
     };
@@ -656,6 +728,14 @@ chrome.extension.onRequest.addListener(function (request, tab, sendRequest) {
 
     if(request.method === 'get-likes') {
         app.getLikes(request.pid, sendRequest);
+    }
+
+    if(request.method === 'get-followedby') {
+        app.getFollowedBy(request.uid, sendRequest);
+    }
+
+    if(request.method === 'get-follows') {
+        app.getFollows(request.uid, sendRequest);
     }
 });
 

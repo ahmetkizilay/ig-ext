@@ -33,7 +33,7 @@ var user_list = (function (d) {
 
     };
 
-    var _fn_constructHeaderDiv = function (pid) {
+    var _fn_constructLikerHeader = function (pid) {
         var header = d.getElementsByClassName('header')[0];
         
         var aImage = d.createElement('a');
@@ -88,39 +88,127 @@ var user_list = (function (d) {
         });
     };
 
-    var _fn_setup = function(params) {
-        var type = params.type;
-        var pid =  params.pid;
-        var uname = params.uname;
+    var _fn_constructFollowHeader = function (uid, uname, statement) {
+        var header = d.getElementsByClassName('header')[0];
+        
+        var aImage = d.createElement('a');
+        aImage.href = '#';
+        aImage.setAttribute('data-uid', uid);
+        aImage.setAttribute('data-uname', uname);
+        aImage.className = 'link-profile';
+        aImage.addEventListener('click', function () {
+            location.href = '/pages/profile.html?uid=' + this.getAttribute('data-uid') + '&uname=' + this.getAttribute('data-uname');
+        });
 
-        _fn_constructHeaderDiv(pid, uname);
+        var img = d.createElement('img');
+        
+        aImage.appendChild(img);
+        header.appendChild(aImage);
 
-        chrome.extension.sendRequest({method: 'get-likes', 'pid': pid}, function (response) {
+        var div = d.createElement('div');
+
+        var span = d.createElement('span');
+
+        var lblFirst = d.createElement('label');
+        lblFirst.innerHTML = statement + '&nbsp;';
+
+        var aUser = d.createElement('a');
+        aUser.href = '#';
+
+        span.appendChild(lblFirst);
+        span.appendChild(aUser);
+
+        div.appendChild(span);
+        header.appendChild(div);
+
+        chrome.extension.sendRequest({method: 'user', 'uid': uid}, function (response) {
+
             if(!response.success) {
-                console.log(response.err);
-                var errJSON = JSON.parse(response.err);
-                console.dir(errJSON);
-
-                if(errJSON.meta && errJSON.meta.error_type == 'APINotAllowedError') {
-                    NOTIFY.notify(errJSON.meta.error_message, {
-                        parent: d.getElementsByTagName('body')[0],
-                        top: 60,
-                        level: 'error'
-                    });
-                }
+                console.log('could not find the image');
                 return;
             }
 
-            var likers = response.data;
-            var divUsers = d.getElementsByClassName('users')[0];
+            var user = response.data;
 
-            likers.forEach(function (liker) {
-                _fn_contructUserDiv(divUsers, liker);
-            });
-
+            aUser.innerHTML = '@' + user.username;
+            aUser.setAttribute('data-uname', user.username);
+            aUser.setAttribute('data-uid', user.id);
+            aUser.className = 'link-profile';
             common.createProfileLinks();
 
+            img.src = user.profile_picture;
         });
+    };
+
+    var _fn_handleResponse = function (response) {
+        if(!response.success) {
+            console.log(response.err);
+            var errJSON = JSON.parse(response.err);
+            console.dir(errJSON);
+
+            if(errJSON.meta && errJSON.meta.error_type == 'APINotAllowedError') {
+                NOTIFY.notify(errJSON.meta.error_message, {
+                    parent: d.getElementsByTagName('body')[0],
+                    top: 60,
+                    level: 'error'
+                });
+            }
+            return;
+        }
+
+        var users = response.data;
+        var divUsers = d.getElementsByClassName('users')[0];
+
+        users.forEach(function (user) {
+            _fn_contructUserDiv(divUsers, user);
+        });
+
+        common.createProfileLinks();
+    };
+
+    var _fn_buildLikers = function (params, callback) {
+        var uname = params.uname;
+        var pid = params.pid;
+
+        _fn_constructLikerHeader(pid, uname);
+
+        chrome.extension.sendRequest({method: 'get-likes', 'pid': pid}, callback);
+    };
+
+    var _fn_buildFollowedBy = function (params, callback) {
+        var uname = params.uname;
+        var uid = params.uid;
+
+        _fn_constructFollowHeader(uid, uname, 'users who follow');
+
+        chrome.extension.sendRequest({method: 'get-followedby', 'uid': uid}, callback);
+    };
+
+    var _fn_buildFollows = function (params, callback) {
+        var uname = params.uname;
+        var uid = params.uid;
+
+        _fn_constructFollowHeader(uid, uname, 'users followed by');
+
+        chrome.extension.sendRequest({method: 'get-follows', 'uid': uid}, callback);
+    };
+
+    var _fn_setup = function(params) {
+
+        switch(params.type) {
+            case 'like':
+                _fn_buildLikers(params, _fn_handleResponse);
+                break;
+            case 'followed-by':
+                _fn_buildFollowedBy(params, _fn_handleResponse);
+                break;
+            case 'follows':
+                _fn_buildFollows(params, _fn_handleResponse);
+                break;
+            default:
+                break;
+        }
+
     };
 
     return {

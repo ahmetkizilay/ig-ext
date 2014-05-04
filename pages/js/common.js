@@ -45,6 +45,30 @@ var common = (function (d) {
         }
     };
 
+    var _fn_createFollowedByLinks = function () {
+        var items = d.getElementsByClassName('followed-by');
+        var _fn_action = function() {
+            location.href = '/pages/user-list.html?type=followed-by&uid=' + this.getAttribute('data-uid') + '&uname=' + this.getAttribute('data-uname');
+        };
+
+        for(var i = 0; i < items.length; i += 1) {
+            var item = items[i];
+            item.addEventListener('click', _fn_action);
+        }
+    };
+
+    var _fn_createFollowsLinks = function () {
+        var items = d.getElementsByClassName('follows');
+        var _fn_action = function() {
+            location.href = '/pages/user-list.html?type=follows&uid=' + this.getAttribute('data-uid') + '&uname=' + this.getAttribute('data-uname');
+        };
+        
+        for(var i = 0; i < items.length; i += 1) {
+            var item = items[i];
+            item.addEventListener('click', _fn_action);
+        }
+    };
+
     var _fn_createHashtagLinks = function () {
         var items = d.getElementsByClassName('hashtag');
 
@@ -170,6 +194,8 @@ var common = (function (d) {
     return  {
         createProfileLinks: _fn_createProfileLinks,
         createLikerLinks: _fn_createLikerLinks,
+        createFollowedByLinks: _fn_createFollowedByLinks,
+        createFollowsLinks: _fn_createFollowsLinks,
         getQueryParams: _fn_getQueryParams,
         setupNavigation: _fn_setupNavigation,
         setupHeader: _fn_setupHeader,
