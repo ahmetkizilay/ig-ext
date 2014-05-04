@@ -1,11 +1,14 @@
 document.addEventListener('DOMContentLoaded', function() {
 
     var btnSignIn = document.getElementById("btnSignIn");
-    btnSignIn.addEventListener('click', function () {
-        var btn = $(this);
-        btn.button('loading');
+    var imgWait = document.getElementsByClassName('wait')[0];
+    var lblError = document.getElementById('lblError');
 
-        $('.wait').show();
+    btnSignIn.addEventListener('click', function () {
+        var origTxt = btnSignIn.innerHTML;
+        btnSignIn.innerHTML = btnSignIn.getAttribute('data-wait-text');
+        lblError.innerHTML = '';
+        imgWait.style.display = 'inline';
 
         chrome.extension.sendRequest({method: 'auth'}, function (result) {
             console.dir(result);
@@ -15,11 +18,10 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             else {
 
-                console.log('auth result is not OK');
-                document.getElementById('lblError').innerHTML = 'oops! could not sign you in. try again later, please...';
+                lblError.innerHTML = 'oops! could not sign you in. try again later, please...';
 
-                btn.button('reset');
-                $('.wait').hide();
+                btnSignIn.innerHTML = origTxt;
+                imgWait.style.display = 'none';
 
             }
         });

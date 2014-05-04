@@ -7,31 +7,24 @@
 
         <title>Chrome Instagram Extension Login</title>
 
-        <link href="../libs/bootstrap-3.1.1-dist/css/bootstrap.min.css" rel="stylesheet">
         <link href="css/main.css" rel="stylesheet">
+        <link href="css/login.css" rel="stylesheet">
     </head>
     <body>
-        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-            <div class="container">
-                <div class="navbar-header">
-                    <a class="navbar-brand profile" href="#"><img class="profile" id="imgProfile" src="img/ig-black.jpg"/></a>
-                    <label class="profile" style="padding-left: 15px;" id="lblProfile">IG EXT</label>
-                </div>
-            </div>
+        <div class="nav-bar">
+            <a class="link-profile" href="#"><img id="imgProfile" src="img/ig-black.jpg"/></a>
+            <label class="link-profile" id="lblProfile">Instagram for Google Chrome</label>
         </div>
 
         <div class="container">
-            <div class="starter-template">
                 <label>You need to be logged in to continue!</label><br />
                 <img class="wait" src="img/wait.gif"></img><br />
-                <a href="#" class="btn btn-default" id="btnSignIn" data-loading-text="signing in...">Sign In With Instagram</a>
+                <button id="btnSignIn" class="login" data-wait-text="signing in...">Sign In With Instagram</button>
                 <br>
                 <label class="error" id="lblError"></label>
-            </div>
+
         </div>
 
-        <script src="../libs/jquery-1.11.0.min.js"></script>
-        <script src="../libs/bootstrap-3.1.1-dist/js/bootstrap.min.js"></script>
         <script src="js/login.js"></script>
     </body>
 </html>

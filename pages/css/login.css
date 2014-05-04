@@ -1,0 +1,19 @@
+body {
+    background-color: white;
+}
+div.container {
+    margin-top: 40px;
+    text-align: center;
+    line-height: 40px;
+}
+
+img.wait {
+    margin: auto;
+    display: none;
+}
+
+button.login {
+    margin-top: 5px;
+    height: 30px;
+    width: 150px;
+}
