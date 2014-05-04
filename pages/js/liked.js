@@ -1,4 +1,4 @@
-var loginPage = (function (d) {
+var likesPage = (function (d) {
 
     // http://jsfiddle.net/g9hAx/2/
     var _fn_constructImage = function (parent, imgData) {
@@ -25,7 +25,6 @@ var loginPage = (function (d) {
         aImage.setAttribute('href', '#');
         var img = document.createElement('img');
         img.setAttribute('src', imgData.images.thumbnail.url);
-        img.className += " media";
         img.setAttribute('data-pid', imgData.id);
         img.addEventListener('click', function () {
             var pid = this.getAttribute('data-pid');
@@ -105,7 +104,7 @@ document.addEventListener('DOMContentLoaded', function() {
         common.setupNavigation();
 
         // loading user feed
-        chrome.extension.sendRequest({method: 'ownfeed'}, function (response) {
+        chrome.extension.sendRequest({method: 'get-liked'}, function (response) {
 
             if(!response.success) {
                 // TODO display error message on screen
@@ -113,11 +112,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
 
-            var data = response.response.data;
+            console.dir(response.data);
+            
+            var data = response.data;
             var divFeed = document.getElementsByClassName('feed')[0];
             
             for(var i = 0; i < data.length; i += 1) {
-                loginPage.constructImage(divFeed, data[i]);
+                likesPage.constructImage(divFeed, data[i]);
             }
 
             common.createProfileLinks();

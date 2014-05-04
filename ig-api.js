@@ -228,5 +228,19 @@ var api = (function () {
         _fn_sendHttpRequest(method, url, null, onsuccess, onfail);
     };
 
+    _methods.get_users_self_media_liked = function() {
+        var parameters = arguments[0];
+        var onsuccess = arguments[1];
+        var onfail = arguments[2];
+
+        var method = 'GET';
+        var endpoint = '/users/self/media/liked';
+        var paramString = _fn_buildParamString(parameters);
+
+        var url = _base_url + endpoint + '?' + paramString;
+
+        _fn_sendHttpRequest(method, url, null, onsuccess, onfail);  
+    };
+
     return _methods;
 })();

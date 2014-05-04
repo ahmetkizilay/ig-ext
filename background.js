@@ -391,6 +391,26 @@ var app = (function (config) {
         api['get_users_userid_follows'].call(api, user_id, parameters, onsuccess, onfail);        
     };
 
+    var _fn_getPostsUserLiked = function (callback) {
+        var parameters = {
+            'access_token': _user_data.access_token
+        };
+
+        var onsuccess = function(response) {
+            var responseJSON = JSON.parse(response);
+            console.dir(responseJSON.data);
+
+            callback({'success': true, 'data': responseJSON.data });
+        };
+
+        var onfail = function(status, msg) {
+            console.log('getPostsUserLiked returned error: ', status, msg);
+            callback({'success': false});
+        };
+
+        api['get_users_self_media_liked'].call(api, parameters, onsuccess, onfail);
+    };
+
     var _fn_getLikes = function (media_id, callback) {
         var parameters = {
             'access_token': _user_data.access_token
@@ -427,6 +447,7 @@ var app = (function (config) {
         likePhoto: _fn_likePhoto,
         unlikePhoto: _fn_unlikePhoto,
         getUser: _fn_getUser,
+        getPostsUserLiked: _fn_getPostsUserLiked,
         getRelationship: _fn_getRelationship,
         getUserFeed: _fn_getUserFeed,
         getCachedPhotoData: _fn_getCachedPhotoData,
@@ -504,6 +525,11 @@ chrome.extension.onRequest.addListener(function (request, tab, sendRequest) {
     if(request.method === 'get-follows') {
         app.getFollows(request.uid, sendRequest);
     }
+
+    if(request.method === 'get-liked') {
+        app.getPostsUserLiked(sendRequest);
+    }
+
 });
 
 app.setup();

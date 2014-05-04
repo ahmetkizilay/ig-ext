@@ -3,8 +3,7 @@
     height: 34px;
     text-align: center;
     margin-top: 5px;
-    border-bottom: solid 1px #c0d0e0;
-    display: block;
+    border-bottom: solid 1px #c0d0e0
 }
 
 .description label{
@@ -14,6 +13,7 @@
 }
 
 .feed {
+    margin-top: 10px;
     padding-top: 15px;
 }
 
@@ -25,14 +25,13 @@
 
 .top {
    opacity: 0;
-   text-align: center;
 }
 
 .middle {
     text-align: center;
 }
 
-.middle img.media {
+.middle img {
     margin-top: 2px;
     border: solid 2px #aaa;
     vertical-align: middle;
