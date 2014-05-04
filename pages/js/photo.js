@@ -48,7 +48,7 @@ var photo = (function (d) {
 
                 strLikes = strLikes.slice(0, -2);
 
-                strLikes += ' and <a href=\'#\'><label class="link-likers" data-pid="' + pid + '">' + (likeCount - givenCount) + ' others</label></a> like this photo.';
+                strLikes += ' and <a href=\'#\'><label class="link-likers" data-pid="' + pid + '">' + (likeCount - givenCount) + ' other' + (likeCount - givenCount > 1 ? 's' : '') + '</label></a> like this photo.';
             }
             else {
                 for(i = 0; i < (givenCount - 1); i += 1) {
