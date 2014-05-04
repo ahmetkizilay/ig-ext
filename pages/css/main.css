@@ -30,9 +30,10 @@ a:visited {
     width: 100%;
     height: 50px;
     line-height: 50px;
+    z-index: 200;
 }
 
-.nav-bar img {
+.nav-bar a.link-profile img {
     width: 48px;
     height: 48px;
     border-radius: 50px 50px 50px 50px;
@@ -48,6 +49,22 @@ a:visited {
 
 .nav-bar label:hover {
     cursor: pointer;
+}
+
+.nav-bar a.link-home img {
+    width: 24px;
+    height: 24px;
+    float: right;
+    margin-top: 12px;
+    margin-right: 10px;
+}
+
+.nav-bar a.link-likes img {
+    width: 24px;
+    height: 24px;
+    float: right;
+    margin-top: 12px;
+    margin-right: 20px;
 }
 
 a.hashtag {
