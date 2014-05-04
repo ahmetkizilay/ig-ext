@@ -90,8 +90,49 @@ var loginPage = (function (d) {
 
     };
 
+    var _fn_loadFeed = function () {
+        var btnLoadMore = d.getElementsByClassName('load-more')[0].getElementsByTagName('button')[0];
+        btnLoadMore.disabled = true;
+
+        var max_id = btnLoadMore.getAttribute('data-next-max-id');
+        var params = {
+            method: 'ownfeed'
+        };
+
+        if(max_id) {
+            params.max = max_id;
+        }
+
+        chrome.extension.sendRequest(params, function (response) {
+
+            if(!response.success) {
+                // TODO display error message on screen
+                console.log('please try again later');
+                btnLoadMore.disabled = false;
+                return;
+            }
+
+            var data = response.response.data;
+            var divFeed = d.getElementsByClassName('feed')[0];
+
+            if(!btnLoadMore.getAttribute('data-next-max-id')) {
+                btnLoadMore.addEventListener('click', _fn_loadFeed);
+            }
+
+            btnLoadMore.setAttribute('data-next-max-id', response.response.pagination.next_max_id);
+
+            for(var i = 0; i < data.length; i += 1) {
+                loginPage.constructImage(divFeed, data[i]);
+            }
+
+            common.createProfileLinks();
+            btnLoadMore.disabled = false;
+        });
+    };
+
     return {
-        constructImage: _fn_constructImage
+        constructImage: _fn_constructImage,
+        loadFeed: _fn_loadFeed
     };
 })(document);
 
@@ -108,23 +149,6 @@ document.addEventListener('DOMContentLoaded', function() {
         common.setupHeader(user_data);
         common.setupNavigation();
 
-        // loading user feed
-        chrome.extension.sendRequest({method: 'ownfeed'}, function (response) {
-
-            if(!response.success) {
-                // TODO display error message on screen
-                console.log('please try again later');
-                return;
-            }
-
-            var data = response.response.data;
-            var divFeed = document.getElementsByClassName('feed')[0];
-            
-            for(var i = 0; i < data.length; i += 1) {
-                loginPage.constructImage(divFeed, data[i]);
-            }
-
-            common.createProfileLinks();
-        });
+        loginPage.loadFeed();
     });
 });

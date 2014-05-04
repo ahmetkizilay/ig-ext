@@ -121,15 +121,20 @@ var app = (function (config) {
         xhr.send(params);
     };
 
-    var _fn_getOwnFeed = function(callback) {
+    var _fn_getOwnFeed = function(max_id, callback) {
         var parameters = {
             'access_token': _user_data.access_token
         };
 
+        if(max_id) {
+            parameters['max_id'] = max_id;
+        }
+
         var onsuccess = function(response) {
             var responseJSON = JSON.parse(response);
+            console.dir(responseJSON);
             Array.prototype.push.apply(_cached_data.feed, responseJSON.data);
-            console.log('cache size: '  + _cached_data.feed.length);
+            
             callback({'success': true, 'response': JSON.parse(response)});
         };
 
@@ -475,7 +480,7 @@ chrome.extension.onRequest.addListener(function (request, tab, sendRequest) {
     }
 
     if(request.method === 'ownfeed') {
-        app.getOwnFeed(sendRequest);
+        app.getOwnFeed(request.max, sendRequest);
     }
 
     if(request.method === 'feed') {

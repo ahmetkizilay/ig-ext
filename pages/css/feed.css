@@ -15,6 +15,7 @@
 
 .feed {
     padding-top: 15px;
+    display: block;
 }
 
 .post {

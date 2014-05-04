@@ -36,9 +36,23 @@ var api = (function () {
 
 
     _methods._users_self_feed = function () {
-        var parameters = arguments[0];
+        var argParams = arguments[0];
         var onsuccess = arguments[1];
         var onfail = arguments[2];
+        
+        var parameters = {};
+        if(argParams['access_token']) {
+            parameters['access_token'] = argParams['access_token'];
+        }
+        if(argParams['count']) {
+            parameters['count'] = argParams['count'];
+        }
+        if(argParams['min_id']) {
+            parameters['min_id'] = argParams['min_id'];
+        }
+        if(argParams['max_id']) {
+            parameters['max_id'] = argParams['max_id'];
+        }
 
         var method = 'GET';
         var endpoint = '/users/self/feed/';

@@ -89,3 +89,12 @@ label.error {
     opacity: 0.7;
     z-index: 300;
 }
+
+div.load-more {
+    width: 100%;
+    display: block;
+    float: left;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    text-align: center;
+}
