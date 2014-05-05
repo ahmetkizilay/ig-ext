@@ -86,9 +86,71 @@ var hashtags = (function (d) {
         parent.appendChild(postDiv);
     };
 
+    var _fn_loadMore = function (hashtag) {
+        var pnlWait = d.getElementsByClassName('load-more')[0];
+        var btnLoadMore = pnlWait.getElementsByTagName('button')[0];
+        var imgLoadMore = pnlWait.getElementsByTagName('img')[0];
+        var max_id = btnLoadMore.getAttribute('data-next-max-id');
+        var parameters = {
+            'method': 'hashtags',
+            'hashtag': hashtag
+        };
+
+        if(max_id) {
+            parameters['max'] = max_id;
+        }
+
+        btnLoadMore.disabled = true;
+        imgLoadMore.style.display = 'inline';
+        // request the post
+        chrome.extension.sendRequest(parameters, function (response) {
+            if(!response.success) {
+
+                var errJSON = JSON.parse(response.err);
+                console.dir(errJSON);
+
+                if(errJSON.meta && errJSON.meta.error_type == 'APINotAllowedError') {
+                    NOTIFY.notify(errJSON.meta.error_message, {
+                        parent: d.getElementsByTagName('body')[0],
+                        top: 60,
+                        level: 'error'
+                    });
+                }
+
+                btnLoadMore.disabled = false;
+                imgLoadMore.style.display = 'none';
+
+                return;
+            }
+
+            var data = response.value.data;
+            var parent = d.getElementsByClassName('posts')[0];
+            data.forEach(function (post) {
+                _fn_constructImage(parent, post);
+            });
+
+            btnLoadMore.setAttribute('data-next-max-id', response.value.pagination.next_max_id);
+
+            btnLoadMore.disabled = false;
+            imgLoadMore.style.display = 'none';
+
+            common.createProfileLinks();
+
+            NOTIFY.notify('retrieved ' + data.length + ' posts', {
+                parent: d.getElementsByTagName('body')[0],
+                top: 60
+            });
+
+        });
+    };
+
     var _fn_setup = function (hashtag) {
         // setup the header
         d.getElementsByClassName('tagname')[0].innerHTML = '#' + hashtag;
+        var btnLoadMore = d.getElementsByClassName('load-more')[0].getElementsByTagName('button')[0];
+        btnLoadMore.addEventListener('click', function () {
+            _fn_loadMore(hashtag);
+        });
 
         chrome.extension.sendRequest({method: 'hashtag-info', 'hashtag': hashtag}, function (response) {
             if(!response.success) {
@@ -109,30 +171,7 @@ var hashtags = (function (d) {
             d.getElementsByClassName('media-count')[0].innerHTML = '(' + response.data.media_count + ')';
         });
 
-        // request the post
-        chrome.extension.sendRequest({method: 'hashtags', 'hashtag': hashtag}, function (response) {
-            if(!response.success) {
-
-                var errJSON = JSON.parse(response.err);
-                console.dir(errJSON);
-
-                if(errJSON.meta && errJSON.meta.error_type == 'APINotAllowedError') {
-                    NOTIFY.notify(errJSON.meta.error_message, {
-                        parent: d.getElementsByTagName('body')[0],
-                        top: 60,
-                        level: 'error'
-                    });
-                }
-                return;
-            }
-
-            var parent = d.getElementsByClassName('posts')[0];
-            response.data.forEach(function (post) {
-                _fn_constructImage(parent, post);
-            });
-
-            common.createProfileLinks();
-        });
+        _fn_loadMore(hashtag);
     };
 
     return {

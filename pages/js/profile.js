@@ -57,7 +57,23 @@ var profile = (function (d) {
     };
 
     var _fn_handleFeed = function (uid) {
-        chrome.extension.sendRequest({method: 'feed', 'uid': uid}, function (response) {
+        var pnlWait = d.getElementsByClassName('load-more')[0];
+        var btnLoadMore = pnlWait.getElementsByTagName('button')[0];
+        var imgLoadMore = pnlWait.getElementsByTagName('img')[0];
+        var max_id = btnLoadMore.getAttribute('data-next-max-id');
+        var parameters = {
+            'method': 'feed',
+            'uid': uid
+        };
+
+        if(max_id) {
+            parameters.max = max_id;
+        }
+
+        imgLoadMore.style.display = 'inline';
+        btnLoadMore.disabled = true;
+
+        chrome.extension.sendRequest(parameters, function (response) {
             if(!response.success) {
 
                 var errJSON = JSON.parse(response.err);
@@ -70,14 +86,32 @@ var profile = (function (d) {
                         level: 'error'
                     });
                 }
+
+                imgLoadMore.style.display = 'none';
+                btnLoadMore.disabled = false;
+
                 return;
             }
 
+            
+            btnLoadMore.setAttribute('data-next-max-id', response.value.pagination.next_max_id);
+
+            var data = response.value.data;
             var parent = d.getElementsByClassName('posts')[0];
-            response.data.forEach(function (post) {
+            
+            data.forEach(function (post) {
                 _fn_constructImage(parent, post);
             });
-            
+
+            imgLoadMore.style.display = 'none';
+            btnLoadMore.disabled = false;
+
+            NOTIFY.notify('retrieved ' + data.length + ' posts', {
+                parent: d.getElementsByTagName('body')[0],
+                top: 60
+            });
+
+
         });
     };
 
@@ -164,6 +198,11 @@ var profile = (function (d) {
 
         // setting username by default in case the user is private
         d.getElementById('user_name').innerHTML = uname;
+
+        var btnLoadMore = d.getElementsByClassName('load-more')[0].getElementsByTagName('button')[0];
+        btnLoadMore.addEventListener('click', function () {
+            _fn_handleFeed(uid);
+        });
 
         _fn_handleUserData(uname, !uid);
 

@@ -146,16 +146,21 @@ var app = (function (config) {
         api['get_users_self_feed'].call(api, parameters, onsuccess, onfail);
     };
 
-    var _fn_getUserFeed = function (uid, callback) {
+    var _fn_getUserFeed = function (uid, max_id, callback) {
         var parameters = {
             'access_token': _user_data.access_token
         };
 
+        if(max_id) {
+            parameters['max_id'] = max_id;
+        }
+
         var onsuccess = function(response) {
+
             var responseJSON = JSON.parse(response);
             console.dir(responseJSON.data);
 
-            callback({'success': true, 'data': responseJSON.data });
+            callback({'success': true, 'value': responseJSON });
         };
 
         var onfail = function(status, msg) {
@@ -166,16 +171,20 @@ var app = (function (config) {
         api['get_users_userid_media_recent'].call(api, uid, parameters, onsuccess, onfail);
     };
 
-    var _fn_getPostsWithHashtag = function (hashtag, callback) {
+    var _fn_getPostsWithHashtag = function (hashtag, max_id, callback) {
         var parameters = {
             'access_token': _user_data.access_token
         };
+        
+        if(max_id) {
+            parameters['max_id'] = max_id;
+        }
 
         var onsuccess = function(response) {
             var responseJSON = JSON.parse(response);
             console.dir(responseJSON.data);
 
-            callback({'success': true, 'data': responseJSON.data });
+            callback({'success': true, 'value': responseJSON });
         };
 
         var onfail = function(status, msg) {
@@ -373,7 +382,7 @@ var app = (function (config) {
             callback({'success': false});
         };
 
-        api['get_users_userid_followedby'].call(api, user_id, parameters, onsuccess, onfail);        
+        api['get_users_userid_followedby'].call(api, user_id, parameters, onsuccess, onfail);
     };
 
     var _fn_getFollows = function (user_id, callback) {
@@ -486,7 +495,7 @@ chrome.extension.onRequest.addListener(function (request, tab, sendRequest) {
     }
 
     if(request.method === 'feed') {
-        app.getUserFeed(request.uid, sendRequest);
+        app.getUserFeed(request.uid, request.max, sendRequest);
     }
 
     if(request.method === 'photo') {
@@ -510,7 +519,7 @@ chrome.extension.onRequest.addListener(function (request, tab, sendRequest) {
     }
 
     if(request.method === 'hashtags') {
-        app.getPostsWithHashtag(request.hashtag, sendRequest);
+        app.getPostsWithHashtag(request.hashtag, request.max, sendRequest);
     }
 
     if(request.method === 'hashtag-info') {

@@ -136,6 +136,12 @@ var likesPage = (function (d) {
             common.createProfileLinks();
             btnLoadMore.disabled = false;
             imgWait.style.display = 'none';
+
+            NOTIFY.notify('retrieved ' + data.length + ' posts', {
+                parent: d.getElementsByTagName('body')[0],
+                top: 60
+            });
+
         });
     };
 

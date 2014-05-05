@@ -88,9 +88,29 @@ var api = (function () {
      */
     _methods.get_users_userid_media_recent = function () {
         var user_id = arguments[0];
-        var parameters = arguments[1];
+        var argParams = arguments[1];
         var onsuccess = arguments[2];
         var onfail = arguments[3];
+
+        var parameters = {};
+        if(argParams['count']) {
+            parameters['count'] = argParams['count'];
+        }
+        if(argParams['max_timestamp']) {
+            parameters['max_timestamp'] = argParams['max_timestamp'];
+        }
+        if(argParams['access_token']) {
+            parameters['access_token'] = argParams['access_token'];
+        }
+        if(argParams['min_timestamp']) {
+            parameters['min_timestamp'] = argParams['min_timestamp'];
+        }
+        if(argParams['min_id']) {
+            parameters['min_id'] = argParams['min_id'];
+        }
+        if(argParams['max_id']) {
+            parameters['max_id'] = argParams['max_id'];
+        }
 
         var method = 'GET';
         var endpoint = '/users/' + user_id + '/media/recent/';
@@ -443,10 +463,21 @@ var api = (function () {
      */
     _methods.get_tags_tagname_media_recent = function() {
         var tag_name = arguments[0];
-        var parameters = arguments[1];
+        var argParams = arguments[1];
         var onsuccess = arguments[2];
         var onfail = arguments[3];
 
+        var parameters = {};
+        if(argParams['access_token']) {
+            parameters['access_token'] = argParams['access_token'];
+        }
+        if(argParams['max_id']) {
+            parameters['max_id'] = argParams['max_id'];
+        }
+        if(argParams['min_id']) {
+            parameters['min_id'] = argParams['min_id'];
+        }
+        
         var method = 'GET';
         var endpoint = '/tags/' + tag_name + '/media/recent';
         var paramString = _fn_buildParamString(parameters);
