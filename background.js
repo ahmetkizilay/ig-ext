@@ -143,7 +143,7 @@ var app = (function (config) {
             callback({'success': false});
         };
 
-        api['_users_self_feed'].call(api, parameters, onsuccess, onfail);
+        api['get_users_self_feed'].call(api, parameters, onsuccess, onfail);
     };
 
     var _fn_getUserFeed = function (uid, callback) {
