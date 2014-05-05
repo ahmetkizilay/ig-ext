@@ -1,4 +1,4 @@
-var loginPage = (function (d) {
+var feedPage = (function (d) {
 
     // http://jsfiddle.net/g9hAx/2/
     var _fn_constructImage = function (parent, imgData) {
@@ -91,8 +91,13 @@ var loginPage = (function (d) {
     };
 
     var _fn_loadFeed = function () {
-        var btnLoadMore = d.getElementsByClassName('load-more')[0].getElementsByTagName('button')[0];
+
+        var pnlLoadMore = d.getElementsByClassName('load-more')[0];
+        var btnLoadMore = pnlLoadMore.getElementsByTagName('button')[0];
+        var imgWait = pnlLoadMore.getElementsByTagName('img')[0];
+
         btnLoadMore.disabled = true;
+        imgWait.style.display = 'inline';
 
         var max_id = btnLoadMore.getAttribute('data-next-max-id');
         var params = {
@@ -109,6 +114,7 @@ var loginPage = (function (d) {
                 // TODO display error message on screen
                 console.log('please try again later');
                 btnLoadMore.disabled = false;
+                imgWait.style.display = 'none';
                 return;
             }
 
@@ -122,16 +128,16 @@ var loginPage = (function (d) {
             btnLoadMore.setAttribute('data-next-max-id', response.response.pagination.next_max_id);
 
             for(var i = 0; i < data.length; i += 1) {
-                loginPage.constructImage(divFeed, data[i]);
+                _fn_constructImage(divFeed, data[i]);
             }
 
             common.createProfileLinks();
             btnLoadMore.disabled = false;
+            imgWait.style.display = 'none';
         });
     };
 
     return {
-        constructImage: _fn_constructImage,
         loadFeed: _fn_loadFeed
     };
 })(document);
@@ -149,6 +155,6 @@ document.addEventListener('DOMContentLoaded', function() {
         common.setupHeader(user_data);
         common.setupNavigation();
 
-        loginPage.loadFeed();
+        feedPage.loadFeed();
     });
 });
