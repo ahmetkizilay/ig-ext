@@ -393,19 +393,21 @@ var app = (function (config) {
             callback({'success': false});
         };
 
-        api['get_users_userid_follows'].call(api, user_id, parameters, onsuccess, onfail);        
+        api['get_users_userid_follows'].call(api, user_id, parameters, onsuccess, onfail);
     };
 
-    var _fn_getPostsUserLiked = function (callback) {
+    var _fn_getPostsUserLiked = function (max_id, callback) {
         var parameters = {
             'access_token': _user_data.access_token
         };
 
+        if(max_id) {
+            parameters['max_like_id'] = max_id;
+        }
+
         var onsuccess = function(response) {
             var responseJSON = JSON.parse(response);
-            console.dir(responseJSON.data);
-
-            callback({'success': true, 'data': responseJSON.data });
+            callback({'success': true, 'value': responseJSON });
         };
 
         var onfail = function(status, msg) {
@@ -532,7 +534,7 @@ chrome.extension.onRequest.addListener(function (request, tab, sendRequest) {
     }
 
     if(request.method === 'get-liked') {
-        app.getPostsUserLiked(sendRequest);
+        app.getPostsUserLiked(request.max, sendRequest);
     }
 
 });

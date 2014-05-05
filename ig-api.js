@@ -109,9 +109,20 @@ var api = (function () {
      * media lists are only available for the currently authenticated user.
      */
     _methods.get_users_self_media_liked = function() {
-        var parameters = arguments[0];
+        var argParams = arguments[0];
         var onsuccess = arguments[1];
         var onfail = arguments[2];
+
+        var parameters = {};
+        if(argParams['access_token']) {
+            parameters['access_token'] = argParams['access_token'];
+        }
+        if(argParams['count']) {
+            parameters['count'] = argParams['count'];
+        }
+        if(argParams['max_like_id']) {
+            parameters['max_like_id'] = argParams['max_like_id'];
+        }
 
         var method = 'GET';
         var endpoint = '/users/self/media/liked';

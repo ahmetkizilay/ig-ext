@@ -91,10 +91,58 @@ var likesPage = (function (d) {
 
     };
 
+    var _fn_loadLiked = function () {
+
+        var pnlLoadMore = d.getElementsByClassName('load-more')[0];
+        var btnLoadMore = pnlLoadMore.getElementsByTagName('button')[0];
+        var imgWait = pnlLoadMore.getElementsByTagName('img')[0];
+
+        btnLoadMore.disabled = true;
+        imgWait.style.display = 'inline';
+
+        var max_id = btnLoadMore.getAttribute('data-next-max-id');
+        var params = {
+            method: 'get-liked'
+        };
+
+        if(max_id) {
+            params.max = max_id;
+        }
+
+        chrome.extension.sendRequest(params, function (response) {
+
+            if(!response.success) {
+                // TODO display error message on screen
+                console.log('please try again later');
+                btnLoadMore.disabled = false;
+                imgWait.style.display = 'none';
+                return;
+            }
+
+            console.dir(response);
+            var data = response.value.data;
+            var divFeed = d.getElementsByClassName('feed')[0];
+
+            if(!btnLoadMore.getAttribute('data-next-max-id')) {
+                btnLoadMore.addEventListener('click', _fn_loadLiked);
+            }
+
+            btnLoadMore.setAttribute('data-next-max-id', response.value.pagination.next_max_like_id);
+
+            for(var i = 0; i < data.length; i += 1) {
+                _fn_constructImage(divFeed, data[i]);
+            }
+
+            common.createProfileLinks();
+            btnLoadMore.disabled = false;
+            imgWait.style.display = 'none';
+        });
+    };
 
     return {
-        constructImage: _fn_constructImage
+        loadLiked: _fn_loadLiked
     };
+
 })(document);
 
 document.addEventListener('DOMContentLoaded', function() {
@@ -110,25 +158,6 @@ document.addEventListener('DOMContentLoaded', function() {
         common.setupHeader(user_data);
         common.setupNavigation();
 
-        // loading user feed
-        chrome.extension.sendRequest({method: 'get-liked'}, function (response) {
-
-            if(!response.success) {
-                // TODO display error message on screen
-                console.log('please try again later');
-                return;
-            }
-
-            console.dir(response.data);
-            
-            var data = response.data;
-            var divFeed = document.getElementsByClassName('feed')[0];
-            
-            for(var i = 0; i < data.length; i += 1) {
-                likesPage.constructImage(divFeed, data[i]);
-            }
-
-            common.createProfileLinks();
-        });
+        likesPage.loadLiked();
     });
 });
