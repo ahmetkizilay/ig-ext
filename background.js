@@ -328,20 +328,26 @@ var app = (function (config) {
     };
 
     var _fn_history = function (params, callback) {
+        var address;
         switch(params.action) {
             case 'add':
                 History.add(params.address);
-                console.log('added', params.address);
+                address = params.address;
                 break;
             case 'back':
-                callback(History.back());
+                address = History.back();
+                callback(address);
                 break;
             case 'fwd':
-                callback(History.fwd());
+                address = History.fwd();
+                callback(address);
                 break;
             default:
                 break;
         }
+
+        address = address.replace('chrome-extension://' + _app_id, '');
+        chrome.browserAction.setPopup({ popup: address });
     };
 
     var _fn_searchUser = function (username, callback) {
