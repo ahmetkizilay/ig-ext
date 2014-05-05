@@ -26,7 +26,7 @@ var user_list = (function (d) {
         div.appendChild(aUser);
 
         var lblUserFullName = d.createElement('label');
-        lblUserFullName.innerHTML = '(' + user.full_name + ')';
+        lblUserFullName.innerHTML = user.full_name ? '(' + user.full_name + ')' : '';
         div.appendChild(lblUserFullName);
 
         parent.appendChild(div);
