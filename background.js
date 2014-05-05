@@ -11,7 +11,7 @@ Array.prototype.firstMatch = function(fn) {
 };
 
 var config = {
-    'client_id': 'dbe12e2ba0eb420f97f0a9af9ace03af',
+    'client_id': '4ae44a7ca27d4c32b73a2a00793cbaf7',
     'access_token_link': 'http://localhost:2424/step_two'
 };
 
@@ -140,7 +140,7 @@ var app = (function (config) {
 
         var onfail = function(status, msg) {
             console.log('getOwnFeed returned error: ', status, msg);
-            callback({'success': false});
+            callback({'success': false, 'msg': msg});
         };
 
         api['get_users_self_feed'].call(api, parameters, onsuccess, onfail);

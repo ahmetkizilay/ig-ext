@@ -113,7 +113,12 @@ var likesPage = (function (d) {
 
             if(!response.success) {
                 // TODO display error message on screen
-                console.log('please try again later');
+                NOTIFY.notify('oops! please try that again', {
+                    parent: d.getElementsByTagName('body')[0],
+                    top: 60,
+                    level: 'error'
+                });
+
                 btnLoadMore.disabled = false;
                 imgWait.style.display = 'none';
                 return;

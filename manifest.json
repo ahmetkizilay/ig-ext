@@ -7,7 +7,7 @@
 
     "homepage_url": "https://github.com/artsince/ig-ext",
     
-    "version": "0.1",
+    "version": "0.5",
 
     "background": {
         "scripts": ["libs/my-history.min.js", "ig-api.js","background.js"]
