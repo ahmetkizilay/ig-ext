@@ -99,6 +99,11 @@ var photo = (function (d) {
             divLocation.getElementsByTagName('label')[0].innerHTML = 'not specified';
         }
 
+        // adding share link
+        var divShare = d.getElementsByClassName('share-link')[0];
+        var lblShareLink = divShare.getElementsByTagName('label')[0];
+        lblShareLink.innerHTML = photoData.link;
+
         // adding the image
         var divImageHolder = d.getElementsByClassName('imgHolder')[0];
         if(photoData.videos) { // this is a video
