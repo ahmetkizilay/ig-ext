@@ -64,7 +64,15 @@ div.hashtag-header label.media-count {
 img.video-img {
     width:16px;
     height:16px;
-    opacity: 0.6;
+    opacity: 0.4;
+    transition: opacity 0.5s;
+    transition-timing-function: ease;
+}
+
+.middle a:hover img.video-img {
+    opacity: 0.8;
+    transition: opacity 0.5s;
+    transition-timing-function: ease;
 }
 
 .bottom {
