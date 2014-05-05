@@ -123,7 +123,8 @@ var app = (function (config) {
 
     var _fn_getOwnFeed = function(max_id, callback) {
         var parameters = {
-            'access_token': _user_data.access_token
+            'access_token': _user_data.access_token,
+            'count': 21
         };
 
         if(max_id) {
@@ -148,7 +149,8 @@ var app = (function (config) {
 
     var _fn_getUserFeed = function (uid, max_id, callback) {
         var parameters = {
-            'access_token': _user_data.access_token
+            'access_token': _user_data.access_token,
+            'count': 21
         };
 
         if(max_id) {
@@ -173,7 +175,8 @@ var app = (function (config) {
 
     var _fn_getPostsWithHashtag = function (hashtag, max_id, callback) {
         var parameters = {
-            'access_token': _user_data.access_token
+            'access_token': _user_data.access_token,
+            'count': 22
         };
         
         if(max_id) {
@@ -413,7 +416,8 @@ var app = (function (config) {
 
     var _fn_getPostsUserLiked = function (max_id, callback) {
         var parameters = {
-            'access_token': _user_data.access_token
+            'access_token': _user_data.access_token,
+            'count': 22
         };
 
         if(max_id) {
