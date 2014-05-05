@@ -141,6 +141,13 @@ var user_list = (function (d) {
     };
 
     var _fn_handleResponse = function (response) {
+        var divLoadMore = d.getElementsByClassName('load-more')[0];
+
+        var btnLoadMore = divLoadMore.getElementsByTagName('button')[0];
+        var imgLoadMore = divLoadMore.getElementsByTagName('img')[0];
+        imgLoadMore.style.display = 'none';
+        btnLoadMore.disabled = false;
+
         if(!response.success) {
             console.log(response.err);
             var errJSON = JSON.parse(response.err);
@@ -156,14 +163,26 @@ var user_list = (function (d) {
             return;
         }
 
-        var users = response.data;
+        var users = response.value.data;
         var divUsers = d.getElementsByClassName('users')[0];
 
         users.forEach(function (user) {
             _fn_contructUserDiv(divUsers, user);
         });
 
+        if(response.value.pagination && response.value.pagination.next_cursor) {
+            btnLoadMore.setAttribute('data-cursor', response.value.pagination.next_cursor);
+        }
+        else {
+            btnLoadMore.removeAttribute('data-cursor');
+        }
+
         common.createProfileLinks();
+
+        NOTIFY.notify('retrieved ' + users.length + ' more users', {
+            parent: d.getElementsByTagName('body')[0],
+            top: 60
+        });
     };
 
     var _fn_buildLikers = function (params, callback) {
@@ -171,6 +190,11 @@ var user_list = (function (d) {
         var pid = params.pid;
 
         _fn_constructLikerHeader(pid, uname);
+
+        var btnLoadMore = d.getElementsByClassName('load-more')[0].getElementsByTagName('button')[0];
+        btnLoadMore.addEventListener('click', function () {
+            // there is no cursor information for likes
+        });
 
         chrome.extension.sendRequest({method: 'get-likes', 'pid': pid}, callback);
     };
@@ -181,12 +205,56 @@ var user_list = (function (d) {
 
         _fn_constructFollowHeader(uid, uname, 'users who follow');
 
+        var btnLoadMore = d.getElementsByClassName('load-more')[0].getElementsByTagName('button')[0];
+        btnLoadMore.addEventListener('click', function () {
+            var cursor = this.getAttribute('data-cursor');
+            if(!cursor) {
+                return;
+            }
+
+            var divLoadMore = this.parentNode;
+            var imgLoadMore = divLoadMore.getElementsByTagName('img')[0];
+            imgLoadMore.style.display = 'inline';
+
+            this.disabled = true;
+
+            var parameters = {
+                'method': 'get-followedby',
+                'uid': uid,
+                'cursor': cursor
+            };
+
+            chrome.extension.sendRequest(parameters, callback);
+        });
+
         chrome.extension.sendRequest({method: 'get-followedby', 'uid': uid}, callback);
     };
 
     var _fn_buildFollows = function (params, callback) {
         var uname = params.uname;
         var uid = params.uid;
+
+        var btnLoadMore = d.getElementsByClassName('load-more')[0].getElementsByTagName('button')[0];
+        btnLoadMore.addEventListener('click', function () {
+            var cursor = this.getAttribute('data-cursor');
+            if(!cursor) {
+                return;
+            }
+
+            var divLoadMore = this.parentNode;
+            var imgLoadMore = divLoadMore.getElementsByTagName('img')[0];
+            imgLoadMore.style.display = 'inline';
+            
+            this.disabled = true;
+
+            var parameters = {
+                'method': 'get-follows',
+                'uid': uid,
+                'cursor': cursor
+            };
+
+            chrome.extension.sendRequest(parameters, callback);
+        });
 
         _fn_constructFollowHeader(uid, uname, 'users followed by');
 

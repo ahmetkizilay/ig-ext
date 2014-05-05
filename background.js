@@ -374,16 +374,20 @@ var app = (function (config) {
         api['get_users_search'].call(api, parameters, onsuccess, onfail);
     };
 
-    var _fn_getFollowedBy = function (user_id, callback) {
+    var _fn_getFollowedBy = function (user_id, cursor, callback) {
         var parameters = {
             'access_token': _user_data.access_token
         };
 
+        if(cursor) {
+            parameters['cursor'] = cursor;
+        }
+
         var onsuccess = function(response) {
             var responseJSON = JSON.parse(response);
-            console.dir(responseJSON.data);
+            console.dir(responseJSON);
 
-            callback({'success': true, 'data': responseJSON.data });
+            callback({'success': true, 'value': responseJSON });
         };
 
         var onfail = function(status, msg) {
@@ -394,16 +398,20 @@ var app = (function (config) {
         api['get_users_userid_followedby'].call(api, user_id, parameters, onsuccess, onfail);
     };
 
-    var _fn_getFollows = function (user_id, callback) {
+    var _fn_getFollows = function (user_id, cursor, callback) {
         var parameters = {
             'access_token': _user_data.access_token
         };
+
+        if(cursor) {
+            parameters['cursor'] = cursor;
+        }
 
         var onsuccess = function(response) {
             var responseJSON = JSON.parse(response);
             console.dir(responseJSON.data);
 
-            callback({'success': true, 'data': responseJSON.data });
+            callback({'success': true, 'value': responseJSON });
         };
 
         var onfail = function(status, msg) {
@@ -437,16 +445,20 @@ var app = (function (config) {
         api['get_users_self_media_liked'].call(api, parameters, onsuccess, onfail);
     };
 
-    var _fn_getLikes = function (media_id, callback) {
+    var _fn_getLikes = function (media_id, cursor, callback) {
         var parameters = {
             'access_token': _user_data.access_token
         };
+
+        if(cursor) {
+            parameters['cursor'] = cursor;
+        }
 
         var onsuccess = function(response) {
             var responseJSON = JSON.parse(response);
             console.dir(responseJSON.data);
 
-            callback({'success': true, 'data': responseJSON.data });
+            callback({'success': true, 'value': responseJSON });
         };
 
         var onfail = function(status, msg) {
@@ -563,15 +575,15 @@ chrome.extension.onRequest.addListener(function (request, tab, sendRequest) {
     }
 
     if(request.method === 'get-likes') {
-        app.getLikes(request.pid, sendRequest);
+        app.getLikes(request.pid, request.cursor, sendRequest);
     }
 
     if(request.method === 'get-followedby') {
-        app.getFollowedBy(request.uid, sendRequest);
+        app.getFollowedBy(request.uid, request.cursor, sendRequest);
     }
 
     if(request.method === 'get-follows') {
-        app.getFollows(request.uid, sendRequest);
+        app.getFollows(request.uid, request.cursor, sendRequest);
     }
 
     if(request.method === 'follow') {
