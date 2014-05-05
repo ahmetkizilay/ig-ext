@@ -16,7 +16,6 @@ var profile = (function (d) {
 
                 console.log(response.err);
                 var errJSON = JSON.parse(response.err);
-                console.dir(errJSON);
 
                 if(errJSON.meta) {
                     NOTIFY.notify(errJSON.meta.error_message, {
@@ -33,7 +32,14 @@ var profile = (function (d) {
         });
     };
 
-    var _fn_handleRelationship = function (uid) {
+    var _fn_handleRelationship = function (uid, isSelf) {
+        if(isSelf) {
+            var btnFollow = d.getElementById('btnFollow');
+            btnFollow.innerHTML = 'YOU';
+            btnFollow.disabled = true;
+            return;
+        }
+
         chrome.extension.sendRequest({method: 'relationship', 'uid': uid}, function (response) {
 
             if(!response.success) {
@@ -51,7 +57,7 @@ var profile = (function (d) {
                 return;
             }
 
-            _fn_fillRelationData(response);
+            _fn_fillRelationData(uid, response);
 
         });
     };
@@ -131,7 +137,7 @@ var profile = (function (d) {
         btnFollow.style.display = 'none';
     };
 
-    var _fn_handleUserData = function (uname, uidUnknown) {
+    var _fn_handleUserData = function (uname, uidUnknown, isSelf) {
         chrome.extension.sendRequest({method: 'search-user', 'uname': uname}, function (response) {
 
             if(!response.success) {
@@ -163,7 +169,7 @@ var profile = (function (d) {
             }
 
             if(uidUnknown) {
-                _fn_handleRelationship(response.data[0].id);
+                _fn_handleRelationship(response.data[0].id, isSelf);
                 _fn_handleFeed(response.data[0].id);
                 _fn_handleCounts(response.data[0].id, response.data[0].username);
             }
@@ -194,7 +200,7 @@ var profile = (function (d) {
 
     };
 
-    var _fn_setup = function (uid, uname) {
+    var _fn_setup = function (uid, uname, isSelf) {
 
         // setting username by default in case the user is private
         d.getElementById('user_name').innerHTML = uname;
@@ -204,18 +210,73 @@ var profile = (function (d) {
             _fn_handleFeed(uid);
         });
 
-        _fn_handleUserData(uname, !uid);
+        _fn_handleUserData(uname, !uid, isSelf);
 
         if(uid) {
-            _fn_handleRelationship(uid);
+            _fn_handleRelationship(uid, isSelf);
             _fn_handleFeed(uid);
             _fn_handleCounts(uid, uname);
         }
 
     };
 
-    var _fn_fillRelationData = function (response) {
-        console.dir(response);
+    var _fn_setFollowAction = function () {
+        var thisButton = this;
+        var action = this.getAttribute('data-action');
+        var uid = this.getAttribute('data-uid');
+        if(!action) {
+            return;
+        }
+
+        chrome.extension.sendRequest({'method': 'follow', 'action': action, 'uid': uid}, function (response) {
+
+            if(!response.success) {
+
+                var errJSON = JSON.parse(response.err);
+                console.dir(errJSON);
+
+                NOTIFY.notify('oops! please try that again later', {
+                    parent: d.getElementsByTagName('body')[0],
+                    top: 60,
+                    level: 'error'
+                });
+
+                return;
+            }
+
+            var notify_message = '';
+            switch(response.data.outgoing_status) {
+                case 'requested':
+                    thisButton.innerHTML = 'REQUESTED';
+                    thisButton.disabled = true;
+                    thisButton.setAttribute('title', 'Waiting For Their Response');
+                    thisButton.removeAttribute('data-action');
+                    notify_message = 'request sent to the user';
+                    break;
+                case 'follows':
+                    thisButton.innerHTML = 'FOLLOWING';
+                    thisButton.setAttribute('data-action', 'unfollow');
+                    thisButton.setAttribute('title', 'Click To Unfollow Them');
+                    notify_message = 'now you are following them';
+                    break;
+                case 'none':
+                    thisButton.innerHTML = 'FOLLOW';
+                    thisButton.setAttribute('data-action', 'follow');
+                    thisButton.setAttribute('title', 'Click To Follow Them');
+                    notify_message = 'you no longer follow them';
+                    break;
+            }
+
+            NOTIFY.notify(notify_message, {
+                parent: d.getElementsByTagName('body')[0],
+                top: 60,
+                level: 'info'
+            });
+
+        });
+    };
+
+    var _fn_fillRelationData = function (uid, response) {
 
         if(!response.success) {
             NOTIFY.notify('Unable to get user data!', {
@@ -247,22 +308,30 @@ var profile = (function (d) {
         }
 
         var btnFollow = d.getElementById('btnFollow');
+        btnFollow.setAttribute('data-uid', uid);
+
+        btnFollow.addEventListener('click', _fn_setFollowAction);
         switch(relData.outgoing_status) {
             case 'follows':
                 btnFollow.innerHTML = 'FOLLOWING';
+                btnFollow.setAttribute('title', 'Click To Unfollow Them');
+                btnFollow.setAttribute('data-action', 'unfollow');
                 break;
             case 'requested':
                 btnFollow.innerHTML = 'REQUESTED';
+                btnFollow.setAttribute('title', 'Waiting For Their Response');
+                btnFollow.disabled = true;
                 break;
             default:
                 btnFollow.innerHTML = 'FOLLOW';
+                btnFollow.setAttribute('title', 'Click To Follow Them');
+                btnFollow.setAttribute('data-action', 'follow');
             break;
         }
 
     };
 
     var _fn_fillUserData = function (response) {
-        console.dir(response);
 
         if(!response.success) {
             NOTIFY.notify('Unable to get user data!', {
@@ -329,7 +398,6 @@ var profile = (function (d) {
         img.className += " media";
         img.addEventListener('click', function () {
             var pid = this.getAttribute('data-pid');
-            console.log(pid);
             location.href = '/pages/photo.html?pid=' + pid;
         });
         aImage.appendChild(img);
@@ -409,9 +477,7 @@ document.addEventListener('DOMContentLoaded', function() {
         var uid = queryParams.uid;
         var uname = queryParams.uname;
 
-        console.dir(queryParams);
-
-        profile.setup(uid, uname);
+        profile.setup(uid, uname, uid === user_data.user_id);
 
     });
 });

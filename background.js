@@ -447,6 +447,27 @@ var app = (function (config) {
         api['get_media_mediaid_likes'].call(api, media_id, parameters, onsuccess, onfail);
     };
 
+    var _fn_modifyFollow = function (user_id, action, callback) {
+        var parameters = {
+            'access_token': _user_data.access_token,
+            'action': action
+        };
+
+        var onsuccess = function(response) {
+            var responseJSON = JSON.parse(response);
+            console.dir(responseJSON.data);
+
+            callback({'success': true, 'data': responseJSON.data });
+        };
+
+        var onfail = function(status, msg) {
+            console.log('modifyFollow returned error: ', status, msg);
+            callback({'success': false});
+        };
+
+        api['post_users_userid_relationship'].call(api, user_id, parameters, onsuccess, onfail);
+    };
+
     var _fn_setup = function () {
 
         chrome.storage.local.get('user_data', function (res) {
@@ -474,6 +495,7 @@ var app = (function (config) {
         getLikes: _fn_getLikes,
         getFollowedBy: _fn_getFollowedBy,
         getFollows: _fn_getFollows,
+        modifyFollow: _fn_modifyFollow,
         history: _fn_history,
         setup: _fn_setup
     };
@@ -540,6 +562,10 @@ chrome.extension.onRequest.addListener(function (request, tab, sendRequest) {
 
     if(request.method === 'get-follows') {
         app.getFollows(request.uid, sendRequest);
+    }
+
+    if(request.method === 'follow') {
+        app.modifyFollow(request.uid, request.action, sendRequest);
     }
 
     if(request.method === 'get-liked') {

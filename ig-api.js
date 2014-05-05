@@ -252,10 +252,18 @@ var api = (function () {
      */
     _methods.post_users_userid_relationship = function() {
         var user_id = arguments[0];
-        var parameters = arguments[1];
+        var argParams = arguments[1];
         var onsuccess = arguments[2];
         var onfail = arguments[3];
 
+        var parameters = {};
+        if(argParams['access_token']) {
+            parameters['access_token'] = argParams['access_token'];
+        }
+        if(argParams['action']) {
+            parameters['action'] = argParams['action'];
+        }
+        
         var method = 'POST';
         var endpoint = '/users/' + user_id + '/relationship';
         var paramString = _fn_buildParamString(parameters);
