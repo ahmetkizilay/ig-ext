@@ -168,6 +168,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         common.setupHeader(user_data);
         common.setupNavigation();
+        common.setupSearch();
 
         likesPage.loadLiked();
     });

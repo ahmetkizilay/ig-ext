@@ -490,12 +490,43 @@ var app = (function (config) {
         api['post_users_userid_relationship'].call(api, user_id, parameters, onsuccess, onfail);
     };
 
+    var _fn_cacheFollows = function (user_id, cursor) {
+
+        _fn_getFollows(user_id, cursor, function (response) {
+            if(!response.success) {
+                return;
+            }
+
+            var users = response.value.data;
+            _cached_data.follows = _cached_data.follows || [];
+
+            for(var i = 0; i < users.length; i += 1) {
+                _cached_data.follows.push(users[i].username);
+            }
+
+            if(response.value.pagination && response.value.pagination.next_cursor) {
+                _fn_cacheFollows(user_id, response.value.pagination.next_cursor);
+            }
+        });
+    };
+
+    var _fn_getCachedFollows = function (filter, callback) {
+        var reg = new RegExp(filter, 'i');
+        var res = _cached_data.follows.filter(function (item) {
+            return reg.test(item);
+        });
+
+        callback({success: true, data: res});
+    };
+
     var _fn_setup = function () {
 
         chrome.storage.local.get('user_data', function (res) {
             if(res.user_data) {
                 _user_data = res.user_data;
             }
+
+            _fn_cacheFollows(_user_data.user_id, 0);
         });
 
     };
@@ -519,6 +550,7 @@ var app = (function (config) {
         getFollows: _fn_getFollows,
         modifyFollow: _fn_modifyFollow,
         history: _fn_history,
+        getCachedFollows: _fn_getCachedFollows,
         setup: _fn_setup
     };
 })(config);
@@ -592,6 +624,10 @@ chrome.extension.onRequest.addListener(function (request, tab, sendRequest) {
 
     if(request.method === 'get-liked') {
         app.getPostsUserLiked(request.max, sendRequest);
+    }
+
+    if(request.method === 'cached-follows') {
+        app.getCachedFollows(request.filter, sendRequest);
     }
 
 });

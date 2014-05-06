@@ -191,6 +191,76 @@ var common = (function (d) {
         return Math.floor(span / secondInMS) + 's';
     };
 
+    var _fn_setupSearch = function () {
+        var divSearch = d.getElementsByClassName('search-query')[0];
+        var txtSearch = divSearch.getElementsByTagName('input')[0];
+        var divResults = divSearch.getElementsByClassName('search-results')[0];
+
+        var _fn_search = function (query, parent) {
+
+            while(parent.firstChild) {
+                parent.removeChild(parent.firstChild);
+            }
+
+            if(!query) {
+                return;
+            }
+
+            chrome.extension.sendRequest({method: 'cached-follows', filter: query}, function (response) {
+                if(!response.success) {
+
+                    var errJSON = JSON.parse(response.err);
+                    console.dir(errJSON);
+
+                    
+                    NOTIFY.notify('oops! try that again please' , {
+                        parent: d.getElementsByTagName('body')[0],
+                        top: 60,
+                        level: 'error'
+                    });
+                
+                    return;
+                }
+
+                var data = response.data;
+                var len = Math.min(10, data.length);
+                for(var i = 0; i < len; i += 1) {
+                    var thisResult = data[i];
+
+                    var div = d.createElement('div');
+                    div.className += ' query-result';
+                    var a = d.createElement('a');
+                    a.innerHTML = '@' + thisResult;
+                    a.href = '#';
+                    a.setAttribute('data-uname', thisResult);
+                    a.className += ' link-profile';
+                    div.appendChild(a);
+
+                    parent.appendChild(div);
+                }
+
+                (function (q) {
+                    var div = d.createElement('div');
+                    div.className += ' query-result';
+                    var a = d.createElement('a');
+                    a.innerHTML = 'search for ' + query ;
+                    a.href = '#';
+                    div.appendChild(a);
+
+                    parent.appendChild(div);
+
+                })(query);
+
+                _fn_createProfileLinks();
+
+            });
+        };
+
+        txtSearch.addEventListener('keyup', function (e) {
+            _fn_search(this.value, divResults);
+        });
+    };
+
     return  {
         createProfileLinks: _fn_createProfileLinks,
         createLikerLinks: _fn_createLikerLinks,
@@ -203,7 +273,8 @@ var common = (function (d) {
         linkifyMention: _fn_linkifyMentions,
         linkifyHashtagsAndMentions: _fn_linkifyHashtagsAndMentions,
         createHashtagLinks: _fn_createHashtagLinks,
-        convertTimestamp: _fn_convertTimestamp
+        convertTimestamp: _fn_convertTimestamp,
+        setupSearch: _fn_setupSearch
     };
 
 })(document);

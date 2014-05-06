@@ -1,6 +1,7 @@
 @import url(http://fonts.googleapis.com/css?family=Ubuntu);
 
 body {
+    padding: 0; margin: 0;
     font-family: 'Ubuntu', sans-serif;
     min-width: 540px;
     min-height: 340px;
@@ -65,7 +66,59 @@ a:visited {
     height: 24px;
     float: right;
     margin-top: 12px;
-    margin-right: 20px;
+    margin-right: 10px;
+}
+
+.nav-bar div.search-query {
+    /* border: solid 1px green; */
+    float: right;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+
+    margin-right: 5px;
+}
+
+.nav-bar div.search-query input{
+    width: 14em;
+    border: 0;
+    outline: none;
+    background-color: black;
+    border-bottom: 1px solid #ccc;
+    color: #ddd;
+    font-size: 12px;
+    background: url("/pages/img/search.png") center left no-repeat;
+    background-size: 12px 12px;
+    padding-left: 14px;
+    margin-top: 18px;
+    display: block;
+}
+
+.nav-bar input.search-query::-webkit-input-placeholder { /* WebKit browsers */
+    opacity: 0.5;
+}
+
+.nav-bar div.search-query div.search-results {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.nav-bar div.search-query div.search-results div.query-result{
+    display: block;
+    background-color: black;
+    border-bottom: solid 1px #ccc;
+    height: 30px;
+    padding: 0; margin: 0;
+    line-height: 30px;
+}
+
+div.query-result a {
+    margin-left: 0.4em;
+    font-weight: normal;
+    font-size: 14px;
+}
+
+div.query-result:last-of-type a {
+    margin-left: 1.4em;
 }
 
 a.hashtag {

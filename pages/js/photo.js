@@ -234,6 +234,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             common.createProfileLinks();
             common.createHashtagLinks();
+            common.setupSearch();
         });
     });
 });

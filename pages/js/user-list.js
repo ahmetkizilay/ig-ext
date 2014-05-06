@@ -296,6 +296,7 @@ document.addEventListener('DOMContentLoaded', function () {
     
         common.setupNavigation();
         common.setupHeader(user_data);
+        common.setupSearch();
 
         var queryParams = common.getQueryParams(location.search);
         user_list.setup(queryParams);

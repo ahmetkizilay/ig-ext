@@ -472,6 +472,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         common.setupHeader(user_data);
         common.setupNavigation();
+        common.setupSearch();
 
         var queryParams = common.getQueryParams(location.search);
         var uid = queryParams.uid;

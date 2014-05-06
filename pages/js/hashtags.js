@@ -191,6 +191,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
         common.setupNavigation();
         common.setupHeader(user_data);
+        common.setupSearch();
 
         var queryParams = common.getQueryParams(location.search);
         var hashtag = queryParams.hashtag;
