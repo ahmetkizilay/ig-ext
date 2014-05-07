@@ -18,6 +18,15 @@ div.hashtag-header label.tagname {
 div.hashtag-header label.media-count {
     font-size: 12px;
     margin-left: 5px;
+    float: left;
+    margin-top: 2px;
+    margin-right: 1em;
+}
+
+div.hashtag-header a.save-tag img {
+    width: 16px;
+    height: 16px;
+    margin-top: 3px;
 }
 
 .posts {

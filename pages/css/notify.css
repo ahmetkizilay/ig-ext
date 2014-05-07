@@ -32,14 +32,14 @@
 
 @-webkit-keyframes slideIn
 {
-0%   {left: -200px; opacity: 1;}
-50%  {left: 10px; opacity: 1;}
+0%   {left: -200px; opacity: 0.6;}
+50%  {left: 10px; opacity: 0.6;}
 100% {opacity: 0;}
 }
 
 @keyframes slideIn
 {
-0%   {left: -200px; opacity: 1;}
-50%  {left: 10px; opacity: 1;}
+0%   {left: -200px; opacity: 0.6;}
+50%  {left: 10px; opacity: 0.6;}
 100% {opacity: 0;}
 }

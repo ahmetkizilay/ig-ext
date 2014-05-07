@@ -147,6 +147,42 @@ var hashtags = (function (d) {
     var _fn_setup = function (hashtag) {
         // setup the header
         d.getElementsByClassName('tagname')[0].innerHTML = '#' + hashtag;
+        var aSaveTag = d.getElementsByClassName('save-tag')[0];
+        var imgSaveTag = aSaveTag.getElementsByTagName('img')[0];
+        chrome.extension.sendRequest({'method': 'saved-tags', check: hashtag}, function (response) {
+            var isTagSaved = response.found;
+
+            var fn_click = function () {
+                var params = {};
+                params.method = isTagSaved ? 'unsave-tag' : 'save-tag';
+                params.tag = hashtag;
+                chrome.extension.sendRequest(params, function (resp) {
+                    var notifyMessage = resp.success ? (isTagSaved ? 'tag is no longer saved': 'tag is saved') : 'oops! try that again';
+                    var notifyLevel = resp.success ? 'info' : 'error';
+
+                    if(resp.success) {
+                        imgSaveTag.src = isTagSaved ? 'img/save-gray.png' : 'img/save.png';
+                        isTagSaved = !isTagSaved;
+                    }
+
+                    NOTIFY.notify(notifyMessage, {
+                        parent: d.getElementsByTagName('body')[0],
+                        top: 60,
+                        level: notifyLevel
+                    });
+                });
+            };
+
+            if(response.found) {
+                imgSaveTag.src = 'img/save.png';
+            }
+            else {
+                imgSaveTag.src = 'img/save-gray.png';
+            }
+
+            aSaveTag.addEventListener('click', fn_click);
+        });
+
         var btnLoadMore = d.getElementsByClassName('load-more')[0].getElementsByTagName('button')[0];
         btnLoadMore.addEventListener('click', function () {
             _fn_loadMore(hashtag);

@@ -29,7 +29,7 @@ var app = (function (config) {
         feed: [],
         users: [],
         follows: [],
-        saved_tags: ['coding', 'node.js', 'yogaeverydamnday', 'ableton', 'cycling74', 'programming']
+        saved_tags: []
     };
 
     var _fn_extractParamFromUrl = function (url, id) {
@@ -505,6 +505,8 @@ var app = (function (config) {
 
             var users = response.value.data;
 
+            _cached_data.follows = _cached_data.follows || [];
+
             for(var i = 0; i < users.length; i += 1) {
                 _cached_data.follows.push(users[i].username);
             }
@@ -540,9 +542,48 @@ var app = (function (config) {
                 _user_data = res.user_data;
             }
 
+            if(res.cached_data) {
+                _cached_data.saved_tags = res.cached_data.saved_tags;
+            }
+
             _fn_cacheFollows(_user_data.user_id, 0);
         });
 
+        chrome.storage.local.get('saved_tags', function (res) {
+                
+            if(res.saved_tags) {
+                _cached_data.saved_tags = res.saved_tags;
+            }
+
+        });
+
+    };
+
+    var _fn_getSavedTags = function (check, callback) {
+        if(check) {
+            callback({found: _cached_data.saved_tags.indexOf(check) > -1});
+        }
+
+        callback({data: _cached_data.saved_tags});
+    };
+
+    var _fn_saveTag = function (tag, callback) {
+        if(_cached_data.saved_tags.indexOf(tag) < 0) {
+            _cached_data.saved_tags.push(tag);
+            chrome.storage.local.set({'saved_tags': _cached_data.saved_tags});
+        }
+
+        callback({success: true});
+    };
+
+    var _fn_unsaveTag = function (tag, callback) {
+        var index = _cached_data.saved_tags.indexOf(tag);
+        if(index > -1 ) {
+            _cached_data.saved_tags.splice(index, 1);
+            chrome.storage.local.set({'saved_tags': _cached_data.saved_tags});
+        }
+
+        callback({success: true});
     };
 
     return {
@@ -566,6 +607,9 @@ var app = (function (config) {
         modifyFollow: _fn_modifyFollow,
         history: _fn_history,
         searchCachedFollowsAndTags: _fn_searchCachedFollowsAndTags,
+        getSavedTags: _fn_getSavedTags,
+        saveTag: _fn_saveTag,
+        unsaveTag: _fn_unsaveTag,
         setup: _fn_setup
     };
 })(config);
@@ -652,6 +696,19 @@ chrome.extension.onRequest.addListener(function (request, tab, sendRequest) {
     if(request.method === 'search-cached') {
         app.searchCachedFollowsAndTags(request.filter, sendRequest);
     }
+
+    if(request.method === 'saved-tags') {
+        app.getSavedTags(request.check, sendRequest);
+    }
+
+    if(request.method === 'save-tag') {
+        app.saveTag(request.tag, sendRequest);
+    }
+
+    if(request.method === 'unsave-tag') {
+        app.unsaveTag(request.tag, sendRequest);
+    }
+
 
 });
 
