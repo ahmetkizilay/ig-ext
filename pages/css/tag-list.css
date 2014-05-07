@@ -23,52 +23,45 @@
     padding-top: 18px;
 }
 
-.header label.user-search {
+.header label.tag-search {
     line-height: 100px;
     color: rgb(0, 79, 179);
     font-size: 20px;
 }
 
-.header label.user-search.query {
+.header label.tag-search.query {
     color: rgb(23, 144, 213);
     font-weight: bold;
 }
 
-.users {
-    margin-top: 20px;
+.tags {
+    margin-top: 0;
     margin-left: 20px;
 }
 
-.user {
+.tag {
     float: left;
     width: 500px;
-    height: 60px;
+    height: 40px;
     margin-bottom: 10px;
-    line-height: 50px;
+    line-height: 40px;
 }
 
-.user:hover {
+.tag:hover {
     background-color: #cecece;
 }
 
-.user:after {
+.tag:after {
     content: '\a';
 }
 
-.user img {
-    width: 50px;
-    height: 50px;
-    border: solid 2px #cecece;
-    float: left;
-    margin-top: 4px;
-}
-
-.user a {
+.tag a {
     text-decoration: none;
     font-size: 18px;
-}
-
-.user a:last-of-type {
     margin-left: 5px;
     margin-right: 5px;
+}
+
+.tag label {
+    font-size: 14px;
 }

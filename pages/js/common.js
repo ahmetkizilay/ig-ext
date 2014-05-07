@@ -12,6 +12,18 @@ var common = (function (d) {
         return _fn_linkifyMentions(result);
     };
 
+    var _fn_makeTagSearchLink = function (el) {
+        el.addEventListener('click', function () {
+            location.href = '/pages/tag-list.html?type=search-tag&q=' + this.getAttribute('data-query');
+        });
+    };
+
+    var _fn_makeUserSearchLink = function (el) {
+        el.addEventListener('click', function () {
+            location.href = '/pages/user-list.html?type=search-user&q=' + this.getAttribute('data-query');
+        });
+    };
+
     var _fn_createProfileLinks = function () {
         var items = d.getElementsByClassName('link-profile');
 
@@ -206,7 +218,7 @@ var common = (function (d) {
                 return;
             }
 
-            chrome.extension.sendRequest({method: 'cached-follows', filter: query}, function (response) {
+            chrome.extension.sendRequest({method: 'search-cached', filter: query}, function (response) {
                 if(!response.success) {
 
                     var errJSON = JSON.parse(response.err);
@@ -229,11 +241,13 @@ var common = (function (d) {
 
                     var div = d.createElement('div');
                     div.className += ' query-result';
+
                     var a = d.createElement('a');
-                    a.innerHTML = '@' + thisResult;
+                    a.innerHTML = thisResult;
                     a.href = '#';
                     a.setAttribute('data-uname', thisResult);
-                    a.className += ' link-profile';
+                    a.className += thisResult.substring(0, 1) === '@' ? ' link-profile' : ' hashtag';
+
                     div.appendChild(a);
 
                     parent.appendChild(div);
@@ -241,9 +255,12 @@ var common = (function (d) {
 
                 (function (q) {
                     var div = d.createElement('div');
-                    div.className += ' query-result';
+                    div.className += ' query-result search-user';
+                    div.setAttribute('data-query', query);
+                    _fn_makeUserSearchLink(div);
+
                     var a = d.createElement('a');
-                    a.innerHTML = 'search for ' + query ;
+                    a.innerHTML = 'search for @' + query ;
                     a.href = '#';
                     div.appendChild(a);
 
@@ -251,7 +268,24 @@ var common = (function (d) {
 
                 })(query);
 
+                (function (q) {
+                    var div = d.createElement('div');
+                    div.className += ' query-result search-hashtag';
+                    div.setAttribute('data-query', query);
+                    _fn_makeTagSearchLink(div);
+
+                    var a = d.createElement('a');
+                    a.innerHTML = 'search for #' + query ;
+                    a.href = '#';
+                    div.appendChild(a);
+
+                    parent.appendChild(div);
+
+
+                })(query);
+
                 _fn_createProfileLinks();
+                _fn_createHashtagLinks();
 
             });
         };

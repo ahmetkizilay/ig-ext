@@ -117,7 +117,7 @@ div.query-result a {
     font-size: 14px;
 }
 
-div.query-result:last-of-type a {
+div.query-result.search-hashtag a, div.query-result.search-user a {
     margin-left: 1.4em;
 }
 

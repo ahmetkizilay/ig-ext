@@ -33,6 +33,21 @@ var user_list = (function (d) {
 
     };
 
+    var _fn_constructUserSearchHeader = function (uname) {
+        var header = d.getElementsByClassName('header')[0];
+
+        var label = d.createElement('label');
+        label.innerHTML = 'users matching&nbsp;';
+        label.className += ' user-search';
+
+        var label2 = d.createElement('label');
+        label2.innerHTML = uname;
+        label2.className += ' user-search query';
+
+        header.appendChild(label);
+        header.appendChild(label2);
+    };
+
     var _fn_constructLikerHeader = function (pid) {
         var header = d.getElementsByClassName('header')[0];
         
@@ -175,6 +190,7 @@ var user_list = (function (d) {
         }
         else {
             btnLoadMore.removeAttribute('data-cursor');
+            btnLoadMore.disabled = true;
         }
 
         common.createProfileLinks();
@@ -256,9 +272,39 @@ var user_list = (function (d) {
             chrome.extension.sendRequest(parameters, callback);
         });
 
-        _fn_constructFollowHeader(uid, uname, 'users followed by');
+        _fn_constructUserSearchHeader(uid, uname, 'users followed by');
 
         chrome.extension.sendRequest({method: 'get-follows', 'uid': uid}, callback);
+    };
+
+    var _fn_buildUserSearch = function (params, callback) {
+        var qUname = params.q;
+
+        var btnLoadMore = d.getElementsByClassName('load-more')[0].getElementsByTagName('button')[0];
+        btnLoadMore.addEventListener('click', function () {
+            var cursor = this.getAttribute('data-cursor');
+            if(!cursor) {
+                return;
+            }
+
+            var divLoadMore = this.parentNode;
+            var imgLoadMore = divLoadMore.getElementsByTagName('img')[0];
+            imgLoadMore.style.display = 'inline';
+            
+            this.disabled = true;
+
+            var parameters = {
+                'method': 'search-user',
+                'uname': qUname,
+                'cursor': cursor
+            };
+
+            chrome.extension.sendRequest(parameters, callback);
+        });
+
+        _fn_constructUserSearchHeader(qUname);
+
+        chrome.extension.sendRequest({method: 'search-user', 'uname': qUname}, callback);
     };
 
     var _fn_setup = function(params) {
@@ -272,6 +318,9 @@ var user_list = (function (d) {
                 break;
             case 'follows':
                 _fn_buildFollows(params, _fn_handleResponse);
+                break;
+            case 'search-user':
+                _fn_buildUserSearch(params, _fn_handleResponse);
                 break;
             default:
                 break;

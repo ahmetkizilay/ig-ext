@@ -516,10 +516,17 @@ var api = (function () {
      * then by popularity. Short tags will be treated as exact matches.
      */
     _methods.get_tags_search = function() {
-        var tag_name = arguments[0];
-        var parameters = arguments[1];
-        var onsuccess = arguments[2];
-        var onfail = arguments[3];
+        var argParams = arguments[0];
+        var onsuccess = arguments[1];
+        var onfail = arguments[2];
+
+        var parameters = {};
+        if(argParams['access_token']) {
+            parameters['access_token'] = argParams['access_token'];
+        }
+        if(argParams['q']) {
+            parameters['q'] = argParams['q'];
+        }
 
         var method = 'GET';
         var endpoint = '/tags/search';

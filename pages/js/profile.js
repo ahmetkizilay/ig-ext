@@ -155,7 +155,7 @@ var profile = (function (d) {
                 return;
             }
 
-            if(response.data.length === 0) {
+            if(response.value.data.length === 0) {
 
                 NOTIFY.notify('user does not exist!', {
                     parent: d.getElementsByTagName('body')[0],
@@ -169,9 +169,9 @@ var profile = (function (d) {
             }
 
             if(uidUnknown) {
-                _fn_handleRelationship(response.data[0].id, isSelf);
-                _fn_handleFeed(response.data[0].id);
-                _fn_handleCounts(response.data[0].id, response.data[0].username);
+                _fn_handleRelationship(response.value.data[0].id, isSelf);
+                _fn_handleFeed(response.value.data[0].id);
+                _fn_handleCounts(response.value.data[0].id, response.value.data[0].username);
             }
 
             _fn_fillUserData(response);
@@ -341,7 +341,7 @@ var profile = (function (d) {
             });
         }
 
-        var userData = response.data[0];
+        var userData = response.value.data[0];
 
         // profile picture
         var profile_picture = d.getElementsByClassName('avatar')[0].getElementsByTagName('img')[0];

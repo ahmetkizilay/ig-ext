@@ -27,7 +27,9 @@ var app = (function (config) {
 
     var _cached_data = {
         feed: [],
-        users: []
+        users: [],
+        follows: [],
+        saved_tags: ['coding', 'node.js', 'yogaeverydamnday', 'ableton', 'cycling74', 'programming']
     };
 
     var _fn_extractParamFromUrl = function (url, id) {
@@ -133,9 +135,6 @@ var app = (function (config) {
 
         var onsuccess = function(response) {
             var responseJSON = JSON.parse(response);
-            console.dir(responseJSON);
-            Array.prototype.push.apply(_cached_data.feed, responseJSON.data);
-            
             callback({'success': true, 'response': JSON.parse(response)});
         };
 
@@ -158,9 +157,7 @@ var app = (function (config) {
         }
 
         var onsuccess = function(response) {
-
             var responseJSON = JSON.parse(response);
-            console.dir(responseJSON.data);
 
             callback({'success': true, 'value': responseJSON });
         };
@@ -225,11 +222,6 @@ var app = (function (config) {
 
         var onsuccess = function(response) {
             var responseJSON = JSON.parse(response);
-            console.dir(responseJSON.data);
-
-            Array.prototype.push.apply(_cached_data.users, responseJSON.data);
-            console.log('users cache size: '  + _cached_data.users.length);
-            
             callback({'success': true, 'data': responseJSON.data });
         };
 
@@ -268,8 +260,6 @@ var app = (function (config) {
 
         var onsuccess = function(response) {
             var responseJSON = JSON.parse(response);
-            console.dir(responseJSON.data);
-
             callback({'success': true, 'data': responseJSON.data });
         };
 
@@ -361,9 +351,7 @@ var app = (function (config) {
 
         var onsuccess = function(response) {
             var responseJSON = JSON.parse(response);
-            console.dir(responseJSON.data);
-
-            callback({'success': true, 'data': responseJSON.data });
+            callback({'success': true, 'value': responseJSON });
         };
 
         var onfail = function(status, msg) {
@@ -372,6 +360,25 @@ var app = (function (config) {
         };
 
         api['get_users_search'].call(api, parameters, onsuccess, onfail);
+    };
+
+    var _fn_searchTag = function (tag, callback) {
+        var parameters = {
+            'access_token': _user_data.access_token,
+            'q': tag
+        };
+
+        var onsuccess = function(response) {
+            var responseJSON = JSON.parse(response);
+            callback({'success': true, 'value': responseJSON });
+        };
+
+        var onfail = function(status, msg) {
+            console.log('searchTag returned error: ', status, msg);
+            callback({'success': false});
+        };
+
+        api['get_tags_search'].call(api, parameters, onsuccess, onfail);
     };
 
     var _fn_getFollowedBy = function (user_id, cursor, callback) {
@@ -409,7 +416,6 @@ var app = (function (config) {
 
         var onsuccess = function(response) {
             var responseJSON = JSON.parse(response);
-            console.dir(responseJSON.data);
 
             callback({'success': true, 'value': responseJSON });
         };
@@ -498,7 +504,6 @@ var app = (function (config) {
             }
 
             var users = response.value.data;
-            _cached_data.follows = _cached_data.follows || [];
 
             for(var i = 0; i < users.length; i += 1) {
                 _cached_data.follows.push(users[i].username);
@@ -510,13 +515,22 @@ var app = (function (config) {
         });
     };
 
-    var _fn_getCachedFollows = function (filter, callback) {
+    var _fn_searchCachedFollowsAndTags = function (filter, callback) {
         var reg = new RegExp(filter, 'i');
-        var res = _cached_data.follows.filter(function (item) {
+        var fn_reg = function (item) {
             return reg.test(item);
+        };
+
+        var resFollows = _cached_data.follows.filter(fn_reg).map(function (item) {
+            return '@' + item;
         });
 
-        callback({success: true, data: res});
+        var resTags = _cached_data.saved_tags.filter(fn_reg).map(function (item) {
+            return '#' + item;
+        });
+
+        //console.dir(res);
+        callback({success: true, data: resFollows.concat(resTags)});
     };
 
     var _fn_setup = function () {
@@ -545,12 +559,13 @@ var app = (function (config) {
         getPostsWithHashtag: _fn_getPostsWithHashtag,
         getHashtagInfo: _fn_getHashtagInfo,
         searchUser: _fn_searchUser,
+        searchTag: _fn_searchTag,
         getLikes: _fn_getLikes,
         getFollowedBy: _fn_getFollowedBy,
         getFollows: _fn_getFollows,
         modifyFollow: _fn_modifyFollow,
         history: _fn_history,
-        getCachedFollows: _fn_getCachedFollows,
+        searchCachedFollowsAndTags: _fn_searchCachedFollowsAndTags,
         setup: _fn_setup
     };
 })(config);
@@ -602,6 +617,10 @@ chrome.extension.onRequest.addListener(function (request, tab, sendRequest) {
         app.getHashtagInfo(request.hashtag, sendRequest);
     }
 
+    if(request.method === 'search-tag') {
+        app.searchTag(request.tag, sendRequest);
+    }
+
     if(request.method  === 'search-user') {
         app.searchUser(request.uname, sendRequest);
     }
@@ -628,6 +647,10 @@ chrome.extension.onRequest.addListener(function (request, tab, sendRequest) {
 
     if(request.method === 'cached-follows') {
         app.getCachedFollows(request.filter, sendRequest);
+    }
+
+    if(request.method === 'search-cached') {
+        app.searchCachedFollowsAndTags(request.filter, sendRequest);
     }
 
 });
