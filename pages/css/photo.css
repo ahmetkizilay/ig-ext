@@ -104,3 +104,10 @@
 .caption {
     margin-bottom: 10px;
 }
+
+.more-comments {
+    margin-top: 10px;
+    text-align: center;
+    line-height: 20px;
+    height: 30px;
+}

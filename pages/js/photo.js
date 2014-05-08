@@ -139,6 +139,23 @@ var photo = (function (d) {
             for(i = 0; i < photoData.comments.data.length; i += 1) {
                 _fn_createCommentBlock(divComments, photoData.comments.data[i], false);
             }
+
+            if(photoData.comments.count > photoData.comments.data.length) {
+                var btnMoreComments = d.createElement('button');
+                btnMoreComments.innerHTML = 'all comments (' + photoData.comments.count + ')';
+                btnMoreComments.setAttribute('data-pid', photoData.id);
+                btnMoreComments.className += " more-comments";
+                btnMoreComments.addEventListener('click', function () {
+                    location.href = '/pages/comments.html?pid=' + this.getAttribute('data-pid');
+                });
+
+                var divMoreComments = d.createElement('div');
+                divMoreComments.className += ' more-comments';
+                divMoreComments.appendChild(btnMoreComments);
+
+
+                divComments.appendChild(divMoreComments);
+            }
         }
 
         // setting up like interaction

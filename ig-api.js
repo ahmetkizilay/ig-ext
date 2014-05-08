@@ -352,9 +352,17 @@ var api = (function () {
      */
     _methods.get_media_mediaid_comments = function() {
         var media_id = arguments[0];
-        var parameters = arguments[1];
+        var argParams = arguments[1];
         var onsuccess = arguments[2];
         var onfail = arguments[3];
+
+        var parameters = {};
+        if(argParams['access_token']) {
+            parameters['access_token'] = argParams['access_token'];
+        }
+        if(argParams['cursor']) {
+            parameters['cursor'] = argParams['cursor'];
+        }
 
         var method = 'GET';
         var endpoint = '/media/' + media_id + '/comments';

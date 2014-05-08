@@ -1,0 +1,54 @@
+.header {
+    margin-top: 10px;
+    margin-left: 20px;
+    line-height: 18px;
+    vertical-align: middle;
+    font-size: 18px;
+    height: 100px;
+}
+
+.header>a {
+    margin-right: 10px;
+    float: left;
+}
+
+.header img {
+    width: 85px;
+    height: 85px;
+    border: solid 2px #cecece;
+}
+
+.header>div {
+    word-wrap: break-word;
+    padding-top: 18px;
+}
+
+.header label.user-search {
+    line-height: 100px;
+    color: rgb(0, 79, 179);
+    font-size: 20px;
+}
+
+.header label.user-search.query {
+    color: rgb(23, 144, 213);
+    font-weight: bold;
+}
+
+.comments {
+    margin-top: 20px;
+    margin-left: 20px;
+}
+
+.comments .comment {
+    margin-bottom: 5px;
+    width: 98%;
+    line-height: 20px;
+}
+
+.comments .comment span {
+    margin-left: 5px;
+}
+
+.comments .comment:hover {
+    background-color: #fcfcfc;
+}

@@ -34,6 +34,7 @@ var common = (function (d) {
 
         for(var i = 0; i < items.length; i += 1) {
             var item = items[i];
+            item.removeEventListener('click', _fn_photoLinkAction);
             item.addEventListener('click', _fn_photoLinkAction);
         }
     };

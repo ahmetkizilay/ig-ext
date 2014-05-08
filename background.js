@@ -475,6 +475,30 @@ var app = (function (config) {
         api['get_media_mediaid_likes'].call(api, media_id, parameters, onsuccess, onfail);
     };
 
+    var _fn_getComments = function (media_id, cursor, callback) {
+        var parameters = {
+            'access_token': _user_data.access_token
+        };
+
+        if(cursor) {
+            parameters['cursor'] = cursor;
+        }
+
+        var onsuccess = function(response) {
+            var responseJSON = JSON.parse(response);
+            console.dir(responseJSON.data);
+
+            callback({'success': true, 'value': responseJSON });
+        };
+
+        var onfail = function(status, msg) {
+            console.log('getComments returned error: ', status, msg);
+            callback({'success': false});
+        };
+
+        api['get_media_mediaid_comments'].call(api, media_id, parameters, onsuccess, onfail);
+    };
+
     var _fn_modifyFollow = function (user_id, action, callback) {
         var parameters = {
             'access_token': _user_data.access_token,
@@ -602,6 +626,7 @@ var app = (function (config) {
         searchUser: _fn_searchUser,
         searchTag: _fn_searchTag,
         getLikes: _fn_getLikes,
+        getComments: _fn_getComments,
         getFollowedBy: _fn_getFollowedBy,
         getFollows: _fn_getFollows,
         modifyFollow: _fn_modifyFollow,
@@ -671,6 +696,10 @@ chrome.extension.onRequest.addListener(function (request, tab, sendRequest) {
 
     if(request.method === 'get-likes') {
         app.getLikes(request.pid, request.cursor, sendRequest);
+    }
+
+    if(request.method == 'get-comments') {
+        app.getComments(request.pid, request.cursor, sendRequest);
     }
 
     if(request.method === 'get-followedby') {
