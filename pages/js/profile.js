@@ -1,14 +1,5 @@
 var profile = (function (d) {
 
-    var _fn_toDateString = function (timestamp) {
-        var date = new Date(timestamp * 1000);
-        var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'November', 'December'];
-
-        var result = date.getDate() + ' ' + months[date.getMonth()] + ' ' + date.getFullYear();
-
-        return result;
-    };
-
     var _fn_handleCounts = function (uid, uname) {
         chrome.extension.sendRequest({method: 'user', 'uid': uid}, function (response) {
 
@@ -382,7 +373,7 @@ var profile = (function (d) {
         topDiv.className = 'top';
         var lblDate = document.createElement('label');
         lblDate.className = 'date';
-        lblDate.innerHTML = _fn_toDateString(imgData.created_time);
+        lblDate.innerHTML = common.toDateString(imgData.created_time);
         topDiv.appendChild(lblDate);
         // end top div
 

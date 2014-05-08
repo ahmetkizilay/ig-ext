@@ -186,6 +186,15 @@ var common = (function (d) {
 
     };
 
+    var _fn_toDateString = function (timestamp) {
+        var date = new Date(timestamp * 1000);
+        var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'November', 'December'];
+
+        var result = date.getDate() + ' ' + months[date.getMonth()] + ' ' + date.getFullYear();
+
+        return result;
+    };
+
     var _fn_convertTimestamp = function (timestamp) {
         var yearInMS = 31557600000;
         var weekInMS = 604800000;
@@ -325,6 +334,7 @@ var common = (function (d) {
         linkifyMention: _fn_linkifyMentions,
         linkifyHashtagsAndMentions: _fn_linkifyHashtagsAndMentions,
         convertTimestamp: _fn_convertTimestamp,
+        toDateString: _fn_toDateString,
         setupSearch: _fn_setupSearch
     };
 
