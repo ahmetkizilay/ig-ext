@@ -303,8 +303,8 @@ var profile = (function (d) {
             container.appendChild(lblPrivate);
             container.appendChild(lblPrivate2);
 
-            var avatar = d.getElementById('avatar');
-            avatar.src = 'img/ig-black.jpg';
+            var btnLoadMore = d.getElementsByClassName('load-more')[0].getElementsByTagName('button')[0];
+            btnLoadMore.style.display = 'none';
         }
 
         var btnFollow = d.getElementById('btnFollow');
