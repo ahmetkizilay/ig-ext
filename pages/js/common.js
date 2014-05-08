@@ -24,10 +24,21 @@ var common = (function (d) {
         });
     };
 
-    var _fn_createProfileLinks = function () {
-        var items = d.getElementsByClassName('link-profile');
+    var _fn_photoLinkAction = function() {
+        var pid = this.getAttribute('data-pid');
+        location.href = '/pages/photo.html?pid=' + pid;
+    };
 
-        var fn = function () {
+    var _fn_createPhotoLinks = function () {
+        var items = d.getElementsByClassName('link-photo');
+
+        for(var i = 0; i < items.length; i += 1) {
+            var item = items[i];
+            item.addEventListener('click', _fn_photoLinkAction);
+        }
+    };
+
+    var _fn_profileLinkAction = function () {
             var redirectStr = '/pages/profile.html?';
 
             if (this.getAttribute('data-uid')) {
@@ -37,11 +48,16 @@ var common = (function (d) {
             redirectStr = redirectStr + 'uname=' + this.getAttribute('data-uname');
 
             location.href = redirectStr;
-        };
+    };
+
+    var _fn_createProfileLinks = function () {
+        var items = d.getElementsByClassName('link-profile');
 
         for(var i = 0; i < items.length; i += 1) {
             var item = items[i];
-            item.addEventListener('click', fn);
+            // removing the action so that we will avoid multiple addition of the same action
+            item.removeEventListener('click', _fn_profileLinkAction);
+            item.addEventListener('click', _fn_profileLinkAction);
         }
     };
 
@@ -297,7 +313,9 @@ var common = (function (d) {
 
     return  {
         createProfileLinks: _fn_createProfileLinks,
+        createPhotoLinks: _fn_createPhotoLinks,
         createLikerLinks: _fn_createLikerLinks,
+        createHashtagLinks: _fn_createHashtagLinks,
         createFollowedByLinks: _fn_createFollowedByLinks,
         createFollowsLinks: _fn_createFollowsLinks,
         getQueryParams: _fn_getQueryParams,
@@ -306,7 +324,6 @@ var common = (function (d) {
         linkifyHashtags: _fn_linkifyHashtags,
         linkifyMention: _fn_linkifyMentions,
         linkifyHashtagsAndMentions: _fn_linkifyHashtagsAndMentions,
-        createHashtagLinks: _fn_createHashtagLinks,
         convertTimestamp: _fn_convertTimestamp,
         setupSearch: _fn_setupSearch
     };

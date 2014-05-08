@@ -25,12 +25,8 @@ var feedPage = (function (d) {
         aImage.setAttribute('href', '#');
         var img = document.createElement('img');
         img.setAttribute('src', imgData.images.thumbnail.url);
-        img.className += " media";
+        img.className += " media link-photo";
         img.setAttribute('data-pid', imgData.id);
-        img.addEventListener('click', function () {
-            var pid = this.getAttribute('data-pid');
-            location.href = '/pages/photo.html?pid=' + pid;
-        });
         aImage.appendChild(img);
 
         if (imgData.type === 'video') {
@@ -137,6 +133,8 @@ var feedPage = (function (d) {
             }
 
             common.createProfileLinks();
+            common.createPhotoLinks();
+            
             btnLoadMore.disabled = false;
             imgWait.style.display = 'none';
 

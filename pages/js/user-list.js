@@ -55,9 +55,6 @@ var user_list = (function (d) {
         aImage.href = '#';
         aImage.setAttribute('data-pid', pid);
         aImage.className = 'link-photo';
-        aImage.addEventListener('click', function () {
-            location.href = '/pages/photo.html?pid=' + this.getAttribute('data-pid');
-        });
 
         var img = d.createElement('img');
         
@@ -97,7 +94,6 @@ var user_list = (function (d) {
             aUser.setAttribute('data-uname', media.user.username);
             aUser.setAttribute('data-uid', media.user.id);
             aUser.className = 'link-profile';
-            common.createProfileLinks();
 
             img.src = media.images.standard_resolution.url;
         });
@@ -111,9 +107,6 @@ var user_list = (function (d) {
         aImage.setAttribute('data-uid', uid);
         aImage.setAttribute('data-uname', uname);
         aImage.className = 'link-profile';
-        aImage.addEventListener('click', function () {
-            location.href = '/pages/profile.html?uid=' + this.getAttribute('data-uid') + '&uname=' + this.getAttribute('data-uname');
-        });
 
         var img = d.createElement('img');
         
@@ -149,7 +142,6 @@ var user_list = (function (d) {
             aUser.setAttribute('data-uname', user.username);
             aUser.setAttribute('data-uid', user.id);
             aUser.className = 'link-profile';
-            common.createProfileLinks();
 
             img.src = user.profile_picture;
         });
@@ -185,6 +177,8 @@ var user_list = (function (d) {
             _fn_contructUserDiv(divUsers, user);
         });
 
+        common.createProfileLinks();
+
         if(response.value.pagination && response.value.pagination.next_cursor) {
             btnLoadMore.setAttribute('data-cursor', response.value.pagination.next_cursor);
         }
@@ -192,8 +186,6 @@ var user_list = (function (d) {
             btnLoadMore.removeAttribute('data-cursor');
             btnLoadMore.disabled = true;
         }
-
-        common.createProfileLinks();
 
         NOTIFY.notify('retrieved ' + users.length + ' more users', {
             parent: d.getElementsByTagName('body')[0],
@@ -325,6 +317,9 @@ var user_list = (function (d) {
             default:
                 break;
         }
+
+        common.createPhotoLinks();
+        common.createProfileLinks();
 
     };
 

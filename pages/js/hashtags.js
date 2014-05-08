@@ -25,11 +25,7 @@ var hashtags = (function (d) {
         var img = document.createElement('img');
         img.setAttribute('src', post.images.thumbnail.url);
         img.setAttribute('data-pid', post.id);
-        img.className += " media";
-        img.addEventListener('click', function () {
-            var pid = this.getAttribute('data-pid');
-            location.href = '/pages/photo.html?pid=' + pid;
-        });
+        img.className += " media link-photo";
         aImage.appendChild(img);
 
         if (post.type === 'video') {
@@ -131,10 +127,11 @@ var hashtags = (function (d) {
 
             btnLoadMore.setAttribute('data-next-max-id', response.value.pagination.next_max_id);
 
+            common.createProfileLinks();
+            common.createPhotoLinks();
+            
             btnLoadMore.disabled = false;
             imgLoadMore.style.display = 'none';
-
-            common.createProfileLinks();
 
             NOTIFY.notify('retrieved ' + data.length + ' posts', {
                 parent: d.getElementsByTagName('body')[0],

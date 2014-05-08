@@ -89,7 +89,7 @@ var photo = (function (d) {
         username.setAttribute('data-uid', photoData.user.id);
         username.setAttribute('data-uname', photoData.user.username);
         username.className += ' link-profile';
-        
+
         // adding location
         var divLocation = d.getElementsByClassName('location')[0];
         if(photoData.location && photoData.location.name) {
@@ -127,8 +127,7 @@ var photo = (function (d) {
         // creating likes
         var spanLikes = d.getElementById('strLikes');
         spanLikes.innerHTML = _fn_createLikesInnerHTML(photoData.likes, photoData.id);
-        common.createLikerLinks();
-        
+
         // adding the caption
         var divComments = d.getElementsByClassName('comments')[0];
         if(photoData.caption) {
@@ -166,6 +165,8 @@ var photo = (function (d) {
                 _fn_unlikePost(photoData.id, this);
             }
         }, false);
+
+        common.createProfileLinks();
 
     };
 
@@ -234,6 +235,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
             common.createProfileLinks();
             common.createHashtagLinks();
+            common.createLikerLinks();
+
             common.setupSearch();
         });
     });
