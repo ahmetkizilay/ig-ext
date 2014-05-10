@@ -542,18 +542,32 @@ var app = (function (config) {
     };
 
     var _fn_searchCachedFollowsAndTags = function (filter, callback) {
+        var tagsOnly = filter.charAt(0) === '#';
+        var usersOnly = filter.charAt(0) === '@';
+        filter = filter.replace(/[^\w+]*/, ''); // remove any # or @ chars from the beginning
+
         var reg = new RegExp(filter, 'i');
         var fn_reg = function (item) {
             return reg.test(item);
         };
 
-        var resFollows = _cached_data.follows.filter(fn_reg).map(function (item) {
-            return '@' + item;
-        });
+        var resFollows = [];
+        var resTags = [];
 
-        var resTags = _cached_data.saved_tags.filter(fn_reg).map(function (item) {
-            return '#' + item;
-        });
+        if(!tagsOnly) {
+            resFollows = _cached_data.follows.filter(fn_reg).map(function (item) {
+                return '@' + item;
+            });
+
+            resFollows = resFollows.slice(0, Math.min(50, resFollows.length)); // cap at 50
+        }
+
+        if(!usersOnly) {
+            resTags = _cached_data.saved_tags.filter(fn_reg).map(function (item) {
+                return '#' + item;
+            });
+            resTags = resTags.slice(0, Math.min(30, resTags.length)); // cap at 30
+        }
 
         //console.dir(res);
         callback({success: true, data: resFollows.concat(resTags)});

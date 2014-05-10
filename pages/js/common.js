@@ -260,8 +260,11 @@ var common = (function (d) {
                     return;
                 }
 
+                var tagsOnly = query.charAt(0) === '#';
+                var usersOnly = query.charAt(0) === '@';
+
                 var data = response.data;
-                var len = Math.min(10, data.length);
+                var len = data.length; //Math.min(20, data.length);
                 for(var i = 0; i < len; i += 1) {
                     var thisResult = data[i];
 
@@ -279,36 +282,45 @@ var common = (function (d) {
                     parent.appendChild(div);
                 }
 
-                (function (q) {
-                    var div = d.createElement('div');
-                    div.className += ' query-result search-user';
-                    div.setAttribute('data-query', query);
-                    _fn_makeUserSearchLink(div);
+                if(!tagsOnly) {
+                    (function (q) {
+                        if(!q) return;
 
-                    var a = d.createElement('a');
-                    a.innerHTML = 'search for @' + query ;
-                    a.href = '#';
-                    div.appendChild(a);
+                        var div = d.createElement('div');
+                        div.className += ' query-result search-user';
+                        div.setAttribute('data-query', q);
+                        _fn_makeUserSearchLink(div);
 
-                    parent.appendChild(div);
+                        var a = d.createElement('a');
+                        a.innerHTML = 'search for @' + q ;
+                        a.href = '#';
+                        div.appendChild(a);
 
-                })(query);
+                        parent.appendChild(div);
 
-                (function (q) {
-                    var div = d.createElement('div');
-                    div.className += ' query-result search-hashtag';
-                    div.setAttribute('data-query', query);
-                    _fn_makeTagSearchLink(div);
+                    })(query.replace(/[^\w+]*/, ''));
+                }
 
-                    var a = d.createElement('a');
-                    a.innerHTML = 'search for #' + query ;
-                    a.href = '#';
-                    div.appendChild(a);
+                if(!usersOnly) {
 
-                    parent.appendChild(div);
+                    (function (q) {
+                        if(!q) return;
 
+                        var div = d.createElement('div');
+                        div.className += ' query-result search-hashtag';
+                        div.setAttribute('data-query', q);
+                        _fn_makeTagSearchLink(div);
 
-                })(query);
+                        var a = d.createElement('a');
+                        a.innerHTML = 'search for #' + q ;
+                        a.href = '#';
+                        div.appendChild(a);
+
+                        parent.appendChild(div);
+
+                    })(query.replace(/[^\w+]*/, ''));
+                }
+
 
                 _fn_createProfileLinks();
                 _fn_createHashtagLinks();
@@ -316,8 +328,15 @@ var common = (function (d) {
             });
         };
 
+        txtSearch.prevValue = '';
         txtSearch.addEventListener('keyup', function (e) {
-            _fn_search(this.value, divResults);
+            var query = this.value.trim();
+            if(this.prevValue === query) {
+                return;
+            }
+
+            _fn_search(query, divResults);
+            this.prevValue = query;
         });
     };
 
