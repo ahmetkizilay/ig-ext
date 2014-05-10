@@ -64,8 +64,30 @@ var photo = (function (d) {
         return strLikes;
     };
 
+    var _fn_createUserInPhotoBlock = function (taggedUser, img, parent) {
+        var div = d.createElement('div');
+        div.className = 'tagged-user';
+        //div.innerHTML = taggedUser.user.username;
+        
+        var a = d.createElement('a');
+        a.innerHTML = taggedUser.user.username;
+        a.href = '#';
+        a.setAttribute('data-uname', taggedUser.user.username);
+        a.setAttribute('data-uid', taggedUser.user.id);
+        a.className += ' link-profile';
+
+        div.appendChild(a);
+
+        parent.insertBefore(div, img);
+
+        div.style.top = Math.floor((taggedUser.position.y * img.clientHeight) + (div.clientHeight)) + 'px';
+        div.style.left = (20 + Math.floor(taggedUser.position.x * img.clientWidth) - (div.clientWidth * 0.5)) + 'px';
+
+    };
+
     var _fn_setup = function (photoData) {
         console.dir(photoData);
+        console.dir(photoData.users_in_photo);
 
         // adding profile picture
         var profilePicture = d.getElementsByClassName('avatar')[0]
@@ -119,10 +141,23 @@ var photo = (function (d) {
             video.appendChild(srcVideo);
             divImageHolder.appendChild(video);
         } else {
+            var span = d.createElement('span');
+            divImageHolder.appendChild(span);
+
             var img = d.createElement('img');
             img.src = photoData.images.standard_resolution.url;
-            divImageHolder.appendChild(img);
+
+            span.appendChild(img);
+
+
+            if(photoData.users_in_photo !== undefined) {
+                for(var i = 0; i < photoData.users_in_photo.length; i += 1) {
+                    _fn_createUserInPhotoBlock(photoData.users_in_photo[i], img, span);
+                }
+            }
+
         }
+
 
         // creating likes
         var spanLikes = d.getElementById('strLikes');
