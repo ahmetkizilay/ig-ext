@@ -264,7 +264,7 @@ var user_list = (function (d) {
             chrome.extension.sendRequest(parameters, callback);
         });
 
-        _fn_constructUserSearchHeader(uid, uname, 'users followed by');
+        _fn_constructFollowHeader(uid, uname, 'users followed by');
 
         chrome.extension.sendRequest({method: 'get-follows', 'uid': uid}, callback);
     };
