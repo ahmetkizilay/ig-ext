@@ -236,11 +236,12 @@ var common = (function (d) {
 
         var _fn_search = function (query, parent) {
 
-            while(parent.firstChild) {
-                parent.removeChild(parent.firstChild);
-            }
-
             if(!query) {
+                // remove everything so that no results are visible
+                while(parent.firstChild) {
+                    parent.removeChild(parent.firstChild);
+                }
+
                 return;
             }
 
@@ -263,23 +264,48 @@ var common = (function (d) {
                 var tagsOnly = query.charAt(0) === '#';
                 var usersOnly = query.charAt(0) === '@';
 
+                var resultDivs = parent.getElementsByTagName('div');
+
+                // for the sake of easiness, I will just remove search items
+                for(i = resultDivs.length - 1; i >= 0; i -= 1) {
+                    if(resultDivs[i].className.indexOf('search-user') > -1 || resultDivs[i].className.indexOf('search-hashtag') > -1) {
+                        parent.removeChild(resultDivs[i]);
+                    }
+                }
+
                 var data = response.data;
                 var len = data.length; //Math.min(20, data.length);
-                for(var i = 0; i < len; i += 1) {
+
+                var resultDivLength = resultDivs.length;
+
+                for(i = 0; i < len; i += 1) {
                     var thisResult = data[i];
 
-                    var div = d.createElement('div');
-                    div.className += ' query-result';
+                    if(i < resultDivLength) { // reuse the old div
+                        var existingA = resultDivs[i].getElementsByTagName('a')[0];
+                        existingA.innerHTML = thisResult;
+                        existingA.setAttribute('data-uname', thisResult);
+                        existingA.className = thisResult.substring(0, 1) === '@' ? 'link-profile' : 'hashtag';
+                    }
+                    else { // if more divs needed create them
 
-                    var a = d.createElement('a');
-                    a.innerHTML = thisResult;
-                    a.href = '#';
-                    a.setAttribute('data-uname', thisResult);
-                    a.className += thisResult.substring(0, 1) === '@' ? ' link-profile' : ' hashtag';
+                        var div = d.createElement('div');
+                        div.className += ' query-result';
 
-                    div.appendChild(a);
+                        var a = d.createElement('a');
+                        a.innerHTML = thisResult;
+                        a.href = '#';
+                        a.setAttribute('data-uname', thisResult);
+                        a.className = thisResult.substring(0, 1) === '@' ? 'link-profile' : 'hashtag';
 
-                    parent.appendChild(div);
+                        div.appendChild(a);
+
+                        parent.appendChild(div);
+                    }
+                }
+
+                for(i = resultDivLength - 1; i >= len; i -=1 ) { // if there are any old divs left remove them
+                    parent.removeChild(resultDivs[i]);
                 }
 
                 if(!tagsOnly) {
