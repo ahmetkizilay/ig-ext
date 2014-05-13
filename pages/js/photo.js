@@ -86,8 +86,6 @@ var photo = (function (d) {
     };
 
     var _fn_setup = function (photoData) {
-        console.dir(photoData);
-        console.dir(photoData.users_in_photo);
 
         // adding profile picture
         var profilePicture = d.getElementsByClassName('avatar')[0]
@@ -225,12 +223,28 @@ var photo = (function (d) {
     var _fn_likePost = function(pid, img) {
 
         chrome.extension.sendRequest({'method': 'like', 'pid': pid}, function (response) {
-            console.log('like result', response.success);
             if(response.success) {
                 img.src = 'img/heart.png';
                 NOTIFY.notify('You just liked this photo!', {
                     parent: d.getElementsByTagName('body')[0],
                     top: 60
+                });
+
+                // update like span
+                chrome.extension.sendRequest({method: 'photo', 'pid': pid}, function (response) {
+
+                    if(!response.success) {
+                        NOTIFY.notify('Unable to update like info!', {
+                            parent: d.getElementsByTagName('body')[0],
+                            top: 60,
+                            level: 'error'
+                        });
+                        return;
+                    }
+
+                    var spanLikes = d.getElementById('strLikes');
+                    spanLikes.innerHTML = _fn_createLikesInnerHTML(response.data.likes, pid);
+                    common.createLikerLinks();
                 });
             }
         });
@@ -240,12 +254,28 @@ var photo = (function (d) {
     var _fn_unlikePost = function(pid, img) {
 
         chrome.extension.sendRequest({'method': 'unlike', 'pid': pid}, function (response) {
-            console.log('unlike result', response.success);
             if(response.success) {
                 img.src = 'img/heart-gray.png';
                 NOTIFY.notify('You just unliked this photo!', {
                     parent: d.getElementsByTagName('body')[0],
                     top: 60
+                });
+
+                // update like span
+                chrome.extension.sendRequest({method: 'photo', 'pid': pid}, function (response) {
+
+                    if(!response.success) {
+                        NOTIFY.notify('Unable to update like info!', {
+                            parent: d.getElementsByTagName('body')[0],
+                            top: 60,
+                            level: 'error'
+                        });
+                        return;
+                    }
+
+                    var spanLikes = d.getElementById('strLikes');
+                    spanLikes.innerHTML = _fn_createLikesInnerHTML(response.data.likes, pid);
+                    common.createLikerLinks();
                 });
             }
         });
